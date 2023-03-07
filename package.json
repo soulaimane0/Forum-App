@@ -1,0 +1,27 @@
+{
+  "name": "forum",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "format": "prettier .  --write"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "vue": "^3.2.45",
+    "vue-router": "^4.1.6"
+  },
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.6",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "eslint": "^8.35.0",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-vue": "^9.9.0",
+    "prettier": "2.8.4",
+    "vite": "^4.1.0"
+  }
+}
