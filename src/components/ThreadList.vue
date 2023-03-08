@@ -2,16 +2,13 @@
 import { computed, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import sourceData from '@/data.json';
+import BaseDate from './BaseDate.vue';
 
 const route = useRoute();
 const router = useRouter();
 const threads = reactive(sourceData.threads);
 const posts = reactive(sourceData.posts);
 const users = reactive(sourceData.users);
-
-const thread = computed(() => {
-  return threads.find((thread) => thread.id === route.params.id);
-});
 
 const postById = (postId) => {
   return posts.find((post) => post.id === postId);
@@ -66,9 +63,12 @@ console.log(sourceData);
         </td>
         <td>
           <p class="fw-bold">{{ thread.title }}</p>
-          <p>
-            by <span class="fw-semibold"> {{ userById(thread.userId).name }} </span>
-          </p>
+          <div class="d-flex">
+            <p>
+              by <span class="fw-semibold"> {{ userById(thread.userId).name }} </span> ,
+            </p>
+            <BaseDate :timestamp="thread.publishedAt" />
+          </div>
         </td>
         <td>
           <p>
@@ -78,39 +78,6 @@ console.log(sourceData);
       </tr>
     </tbody>
   </table>
-  <!-- <div v-for="thread in threads" :key="thread.id">
-    <h1 class="text-center mb-3">{{ thread.title }}</h1>
-    <div
-      class="card shadow border-0 mb-3 p-3"
-      v-for="postId in thread.posts"
-      :key="postId"
-    >
-      <div class="row g-0">
-        <div
-          class="col-md-2 d-flex flex-column justify-content-between align-items-center"
-        >
-          <h5>{{ userById(postById(postId).userId).name }}</h5>
-          <img
-            :src="userById(postById(postId).userId).avatar"
-            class="w-75 rounded-circle"
-            alt="User picture"
-            referrerpolicy="no-referrer"
-          />
-          <h6>{{ countPostByUser(postById(postId).userId) }} posts</h6>
-        </div>
-        <div class="col-md-10">
-          <div class="card-body">
-            <p class="card-text">
-              {{ postById(postId).text }}
-            </p>
-            <p class="card-text float-end">
-              <small class="text-muted">{{ postById(postId).publishedAt }}</small>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 </template>
 
 <style scoped></style>
