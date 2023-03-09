@@ -1,0 +1,175 @@
+//Enabling negative margins
+$enable-negative-margins: true;
+
+@import 'node_modules/bootstrap/scss/functions';
+@import 'node_modules/bootstrap/scss/variables';
+
+//******Custom colors
+$primary: #53389e;
+
+$theme-colors: (
+    'primary': $primary,
+    'secondary': $secondary,
+    'success': $success,
+    'info': $info,
+    'warning': $warning,
+    'danger': $danger,
+    'light': $light,
+    'dark': $dark,
+);
+
+$custom-theme-colors: (
+    'white': #fff,
+    'gray-800': #1d2939,
+    'pink-700': #c11574,
+    'pink-500': #ee46bc,
+    'primary-200': #e9d7fe,
+    'primary-500': #f59739,
+    'primary-600': #7f56d9,
+    'primary-700': #6941c6,
+    'primary-50': #f9f5ff,
+    'gray-200': #eaecf0,
+    'gray-900': #101828,
+    'gray-500': #667085,
+    'gray-700': #344054,
+    'gray-400': #98a2b3,
+    'gray-100': #f2f4f7,
+    'gray-300': #d0d5dd,
+    'indigo-700': #3538cd,
+    'bluelight-700': #026aa2,
+    'rose-700': #c01048,
+    'blue-700': #175cd3,
+    'blue-500': #2e90fa,
+    'success-500': #12b76a,
+    'warning-300': #fec84b,
+);
+
+$theme-colors: map-merge($map1: $custom-theme-colors,
+        $map2: $theme-colors,
+    );
+
+//******Custom spacers
+$spacers: (
+    0: 0,
+    1: $spacer * 0.25,
+    // 4px
+    2: $spacer * 0.5,
+    // 8px
+    3: $spacer * 0.75,
+    // 12px
+    4: $spacer * 1,
+    // 16px
+    5: $spacer * 1.25,
+    // 20px
+);
+
+$spacers: map-merge((6: ($spacer * 1.5,
+            ),
+            // 24px
+            7: ($spacer * 1.75,
+            ),
+            // 28px
+            8: ($spacer * 2,
+            ),
+            // 32px
+            10: ($spacer * 2.5,
+            ),
+            // 40px
+            12: ($spacer * 3,
+            ),
+            // 48px
+            16: ($spacer * 4,
+            ),
+            // 64px
+            20: ($spacer * 5,
+            ),
+            // 80px
+            24: ($spacer * 6,
+            ),
+            // 96px
+            32: ($spacer * 8,
+            ),
+            // 128px
+            40: ($spacer * 10,
+            ),
+            // 160px
+            48: ($spacer * 12,
+            ),
+            // 192px
+            56: ($spacer * 14,
+            ),
+            // 224px
+            64: ($spacer * 16,
+            ) // 256px,
+        ),
+        $spacers);
+
+@import 'node_modules/bootstrap/scss/maps';
+@import 'node_modules/bootstrap/scss/mixins';
+@import 'node_modules/bootstrap/scss/utilities';
+
+//******Custom opacity and width/height values
+$utilities: map-merge($utilities,
+        ('bg-opacity': (css-var: true,
+                class: bg-opacity,
+                values: (5: 0.05,
+                    10: 0.1,
+                    15: 0.15,
+                    20: 0.2,
+                    25: 0.25,
+                    50: 0.5,
+                    75: 0.75,
+                    100: 1,
+                ),
+            ),
+            'width': (property: width,
+                class: w,
+                values: (5: 5%,
+                    10: 10%,
+                    15: 15%,
+                    25: 25%,
+                    50: 50%,
+                    75: 75%,
+                    100: 100%,
+                    auto: auto,
+                ),
+            ),
+            'max-height': (property: max-height,
+                class: mh,
+                values: (25: 25%,
+                    50: 50%,
+                    75: 75%,
+                    100: 100%,
+                ),
+            ),
+            'min-viewport-height': (property: min-height,
+                class: min-vh,
+                values: (25: 25vh,
+                    50: 50vh,
+                    75: 75vh,
+                    100: 100vh,
+                ),
+            ),
+
+            'max-width': (property: max-width,
+                class: mw,
+                values: (25: 25%,
+                    50: 50%,
+                    75: 75%,
+                    100: 100%,
+                ),
+            ),
+        ));
+
+$utilities: (
+    ('negative-margin': map-get($utilities, 'negative-margin'),
+        'negative-margin-x': map-get($utilities, 'negative-margin-x'),
+        'negative-margin-y': map-get($utilities, 'negative-margin-y'),
+        'negative-margin-top': map-get($utilities, 'negative-margin-top'),
+        'negative-margin-end': map-get($utilities, 'negative-margin-end'),
+        'negative-margin-bottom': map-get($utilities, 'negative-margin-bottom'),
+        'negative-margin-start': map-get($utilities, 'negative-margin-start'),
+    )
+);
+
+@import 'node_modules/bootstrap/scss/bootstrap.scss';
