@@ -13,16 +13,19 @@
   "dependencies": {
     "bootstrap": "^5.2.3",
     "dayjs": "^1.11.7",
+    "unplugin-vue-components": "^0.24.1",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@types/bootstrap": "^5.2.6",
+    "@types/node": "^18.14.6",
     "@vitejs/plugin-vue": "^4.0.0",
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-vue": "^9.9.0",
     "prettier": "2.8.4",
+    "sass": "^1.58.3",
     "vite": "^4.1.0"
   }
 }
