@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import sourceData from '@/data.json';
 import Home from '@/pages/Home.vue';
 import ThreadShow from '@/pages/ThreadShow.vue';
+import Forum from '@/pages/Forum.vue';
 import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
@@ -31,6 +32,11 @@ const routes = [
         });
       }
     },
+  },
+  {
+    path: '/forum/:id',
+    name: 'forum',
+    component: Forum,
   },
   {
     path: '/:pathMatch(.*)*',

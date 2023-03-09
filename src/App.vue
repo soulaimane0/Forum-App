@@ -1,6 +1,7 @@
 <script setup></script>
 
 <template>
+  <NavigationBar />
   <div class="container pt-4">
     <RouterView :key="$route.fullPath" />
   </div>

@@ -6,6 +6,8 @@ import router from '@/router';
 import 'bootstrap/dist/css/bootstrap.css';
 import BootstrapPlugin from '@/plugins/bootstrap.js';
 
+import '@/sass/main.scss';
+
 const forumApp = createApp(App);
 
 forumApp.use(BootstrapPlugin);

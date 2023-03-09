@@ -2,8 +2,6 @@
 import { computed, reactive, ref } from 'vue';
 import sourceData from '@/data.json';
 import { useRoute } from 'vue-router';
-import PostsList from '@/components/PostsList.vue';
-import PostEditor from '@/components/PostEditor.vue';
 
 const route = useRoute();
 const threads = reactive(sourceData.threads);

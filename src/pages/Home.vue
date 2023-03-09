@@ -1,11 +1,14 @@
 <script setup>
-import ThreadList from '../components/ThreadList.vue';
+import sourceData from '@/data.json';
+import { reactive } from 'vue';
+
+const categories = reactive(sourceData.categories);
 </script>
 
 <template>
   <h1 class="text-center my-4">Welcome To Forum</h1>
   <div>
-    <ThreadList />
+    <CategoryList :categories="categories" />
   </div>
 </template>
 

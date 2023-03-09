@@ -2,7 +2,6 @@
 import { reactive, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import sourceData from '@/data.json';
-import BaseDate from './BaseDate.vue';
 
 const props = defineProps(['threadPosts']);
 
