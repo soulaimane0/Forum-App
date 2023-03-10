@@ -35,6 +35,7 @@ console.log(sourceData);
         </thead>
         <tbody>
           <tr
+            v-if="threads?.length"
             v-for="thread in threads"
             :key="thread.id"
             style="cursor: pointer"
@@ -69,6 +70,11 @@ console.log(sourceData);
               <p>
                 <span class="fw-bold">{{ thread.posts.length }}</span> replys
               </p>
+            </td>
+          </tr>
+          <tr v-else>
+            <td colspan="3">
+              <p>No threads Available...</p>
             </td>
           </tr>
         </tbody>

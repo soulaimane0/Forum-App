@@ -26,7 +26,14 @@ const toForumPage = (forumId) => {
       >
         <thead>
           <tr class="fs-3 bg-primary">
-            <th class="text-light" colspan="3" scope="col">{{ category.name }}</th>
+            <th colspan="3" scope="col">
+              <RouterLink
+                class="text-light text-decoration-none"
+                :to="{ name: 'category', params: { id: category.id } }"
+              >
+                {{ category.name }} -->
+              </RouterLink>
+            </th>
           </tr>
         </thead>
         <tbody>
