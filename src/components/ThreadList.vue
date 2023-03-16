@@ -1,27 +1,10 @@
 <script setup>
 import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import sourceData from '@/data.json';
+import useThreadStore from '@/stores/ThreadStore';
+import { storeToRefs } from 'pinia';
 
+const { getUserByThread } = storeToRefs(useThreadStore());
 const props = defineProps(['threads']);
-const emit = defineEmits(['to-thread-page']);
-const route = useRoute();
-const router = useRouter();
-const users = reactive(sourceData.users);
-
-const userById = (userId) => {
-  return users.find((user) => user.id === userId);
-};
-
-const countPostByUser = (userId) => {
-  const userPosts = ref(0);
-  posts.forEach((post) => {
-    if (post.userId === userId) userPosts.value += 1;
-  });
-  return userPosts.value;
-};
-
-console.log(sourceData);
 </script>
 
 <template>
@@ -39,29 +22,40 @@ console.log(sourceData);
             v-for="thread in threads"
             :key="thread.id"
             style="cursor: pointer"
-            @click="emit('to-thread-page', thread.id)"
           >
             <td>
-              <div class="d-flex align-items-center">
-                <img
-                  :src="userById(thread.userId).avatar"
-                  alt="user profile"
-                  style="width: 45px; height: 45px"
-                  class="rounded-circle"
-                  referrerpolicy="no-referrer"
-                />
-                <div class="ms-3">
-                  <p class="fw-bold mb-1">{{ userById(thread.userId).name }}</p>
-                  <p class="text-muted mb-0">{{ userById(thread.userId).email }}</p>
+              <RouterLink
+                class="text-decoration-none"
+                :to="{ name: 'thread', params: { id: thread.id } }"
+              >
+                <div class="d-flex align-items-center">
+                  <img
+                    :src="getUserByThread(thread.userId).avatar"
+                    alt="user profile"
+                    style="width: 45px; height: 45px"
+                    class="rounded-circle"
+                    referrerpolicy="no-referrer"
+                  />
+                  <div class="ms-3">
+                    <p class="fw-bold mb-1">
+                      {{ getUserByThread(thread.userId).name }}
+                    </p>
+                    <p class="text-muted mb-0">
+                      {{ getUserByThread(thread.userId).email }}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </RouterLink>
             </td>
             <td>
               <p class="fw-bold">{{ thread.title }}</p>
               <div class="d-flex">
                 <p>
                   by
-                  <span class="fw-semibold"> {{ userById(thread.userId).name }} </span> ,
+                  <span class="fw-semibold">
+                    {{ getUserByThread(thread.userId).name }}
+                  </span>
+                  ,
                 </p>
                 <BaseDate :timestamp="thread.publishedAt" />
               </div>

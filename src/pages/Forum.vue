@@ -1,32 +1,22 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import sourceData from '@/data.json';
+import { ref } from 'vue';
+import { useRoute } from 'vue-router';
+import useForumStore from '@/stores/ForumStore';
+import { storeToRefs } from 'pinia';
 
+const { getForum, getThreadsByForum } = storeToRefs(useForumStore());
 const route = useRoute();
-const router = useRouter();
-const threads = reactive(sourceData.threads);
-const forums = reactive(sourceData.forums);
-
-const forum = computed(() => {
-  return forums.find((item) => item.id === route.params.id);
-});
-const getThreadByForumId = computed(() => {
-  return threads.filter((item) => item.forumId === route.params.id);
-});
-const toThreadPage = (threadId) => {
-  router.push({ name: 'thread', params: { id: threadId } });
-};
+const forumId = ref(route.params.id);
 </script>
 
 <template>
   <div class="row">
     <div class="col-12">
-      <h1>{{ forum.name }}</h1>
-      <p>{{ forum.description }}</p>
+      <h1>{{ getForum(forumId).name }}</h1>
+      <p>{{ getForum(forumId).description }}</p>
     </div>
   </div>
-  <ThreadList :threads="getThreadByForumId" @toThreadPage="toThreadPage" />
+  <ThreadList :threads="getThreadsByForum(forumId)" />
 </template>
 
 <style lang="scss" scoped></style>

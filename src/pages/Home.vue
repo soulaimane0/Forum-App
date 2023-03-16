@@ -1,8 +1,8 @@
 <script setup>
-import sourceData from '@/data.json';
 import { reactive } from 'vue';
-
-const categories = reactive(sourceData.categories);
+import useCategoryStore from '@/stores/CategoryStore.js';
+import { storeToRefs } from 'pinia';
+const { categories } = storeToRefs(useCategoryStore());
 </script>
 
 <template>

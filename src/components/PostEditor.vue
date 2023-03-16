@@ -1,6 +1,9 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import usePostsStore from '@/stores/PostsStore';
+
+const postsStore = usePostsStore();
 
 const route = useRoute();
 const emit = defineEmits(['save-post']);
