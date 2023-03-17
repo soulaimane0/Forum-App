@@ -22,9 +22,9 @@ const diffDate = (timestamp) => {
 </script>
 
 <template>
-  <p :title="fullDate(timestamp)">
+  <span :title="fullDate(timestamp)">
     <small class="text-muted"> {{ diffDate(timestamp) }} </small>
-  </p>
+  </span>
 </template>
 
 <style lang="scss" scoped></style>

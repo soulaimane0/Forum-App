@@ -2,18 +2,20 @@
 import { reactive, computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import usePostsStore from '@/stores/PostsStore';
+import useUserStore from '@/stores/UserStore';
 import { storeToRefs } from 'pinia';
 
 const { getUserByPost } = storeToRefs(usePostsStore());
+const { countUserPosts } = storeToRefs(useUserStore());
 
-const props = defineProps(['threadPosts']);
+const props = defineProps(['posts']);
 </script>
 
 <template>
-  <div class="card shadow border-0 mb-3 p-3" v-for="post in threadPosts" :key="post.id">
+  <div class="card shadow border-0 mb-3 p-3" v-for="post in posts" :key="post.id">
     <div class="row g-0">
       <div class="col-md-2 d-flex flex-column align-items-center">
-        <h5>{{ getUserByPost(post.userId).name }}</h5>
+        <h5>{{ getUserByPost(post.userId).username }}</h5>
         <img
           :src="getUserByPost(post.userId).avatar"
           style="width: 95px; height: 95px"
@@ -21,7 +23,7 @@ const props = defineProps(['threadPosts']);
           alt="User picture"
           referrerpolicy="no-referrer"
         />
-        <h6>19 posts</h6>
+        <h6>{{ countUserPosts(post.userId) }} posts</h6>
       </div>
       <div class="col-md-10">
         <div class="card-body">

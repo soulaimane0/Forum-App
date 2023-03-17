@@ -12,16 +12,14 @@ const postReply = ref(null);
 const savePost = () => {
   if (postReply.value) {
     const post = reactive({
-      id: 'uikChsp-' + Math.random() * 9999,
       publishedAt: Math.floor(new Date() / 1000),
       text: postReply.value,
-      threadId: route.params.id,
       userId: 'Miej9zSGMRZKDvMXzfxjVOyv3RF3',
     });
     emit('save-post', { post });
     postReply.value = null;
   } else {
-    alert('Please write some text in the post field');
+    alert('Please write some text in the post input field !');
   }
 };
 </script>
