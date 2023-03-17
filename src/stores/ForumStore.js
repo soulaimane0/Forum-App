@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
 import useThreadStore from './ThreadStore';
 
@@ -14,5 +14,7 @@ const useForumStore = defineStore('forumStore', {
     },
   },
 });
-
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useForumStore, import.meta.hot));
+}
 export default useForumStore;

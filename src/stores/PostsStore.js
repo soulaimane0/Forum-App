@@ -1,7 +1,7 @@
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
 import useUserStore from './UserStore';
-import { reactive, defineEmits } from 'vue';
+import useThreadStore from './ThreadStore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -12,25 +12,21 @@ const usePostsStore = defineStore('postsStore', {
       const userStore = useUserStore();
       return userStore.users.find((user) => user.id === userId);
     },
+    getPostsByThread: (state) => (threadId) =>
+      state.posts.filter((item) => item.threadId === threadId),
   },
   actions: {
-    // save(replyText, threadId) {
-    // //   const emit = defineEmits(['save-post']);
-    //   if (replyText) {
-    //     const post = reactive({
-    //       id: 'uikChsp-' + Math.random() * 9999,
-    //       publishedAt: Math.floor(new Date() / 1000),
-    //       text: replyText,
-    //       threadId: threadId,
-    //       userId: 'Miej9zSGMRZKDvMXzfxjVOyv3RF3',
-    //     });
-    //     emit('save-post', { post });
-    //     replyText = null;
-    //   } else {
-    //     alert('Please write some text in the post field');
-    //   }
-    // },
+    save(post, threadId) {
+      post.id = '-pjvt' + Math.random() * 9999;
+      post.threadId = threadId;
+      this.posts.unshift(post);
+      const thread = useThreadStore().threads.find((item) => item.id === threadId);
+      thread.posts.unshift(post.id);
+    },
   },
 });
 
+// if (import.meta.hot) {
+//   import.meta.hot.accept(acceptHMRUpdate(useThreadStore, import.meta.hot));
+// }
 export default usePostsStore;
