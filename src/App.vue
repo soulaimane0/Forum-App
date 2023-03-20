@@ -11,6 +11,7 @@
 body {
   background-color: #f6f8ff !important;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 body::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);

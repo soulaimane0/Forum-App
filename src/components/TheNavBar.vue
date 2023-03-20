@@ -2,7 +2,7 @@
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { storeToRefs } from 'pinia';
 
-const { authenticatedUser } = storeToRefs(useAuthStore());
+const { authenticatedUser, authId } = storeToRefs(useAuthStore());
 </script>
 
 <template>
@@ -65,7 +65,7 @@ const { authenticatedUser } = storeToRefs(useAuthStore());
                     href="#"
                     :to="{
                       name: 'profile',
-                      params: { id: 'u4r8XCziZEWEXsj2UIKNHBoDh0n2' },
+                      params: { id: authId },
                     }"
                     >View Profile</RouterLink
                   >

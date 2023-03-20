@@ -12,9 +12,7 @@ const postReply = ref(null);
 const savePost = () => {
   if (postReply.value) {
     const post = reactive({
-      publishedAt: Math.floor(new Date() / 1000),
       text: postReply.value,
-      userId: 'Miej9zSGMRZKDvMXzfxjVOyv3RF3',
     });
     emit('save-post', { post });
     postReply.value = null;

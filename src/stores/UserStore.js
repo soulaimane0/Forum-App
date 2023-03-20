@@ -17,6 +17,13 @@ const useUserStore = defineStore('userStore', {
     countUserPosts: (state) => (userId) => state.getPostsByUser(userId).length,
     countUserThreads: (state) => (userId) => state.getThreadByUser(userId).length,
   },
+  actions: {
+    updateUserDetails(userData, userId) {
+      const userIndex = this.users.findIndex((item) => item.id === userId);
+      this.users[userIndex] = userData;
+      console.log('Updated Successfilly !!!');
+    },
+  },
 });
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useUserStore, import.meta.hot));

@@ -2,6 +2,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
 import useUserStore from './UserStore';
 import useThreadStore from './ThreadStore';
+import useAuthStore from '@/stores/AuthenticatedStore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -19,6 +20,8 @@ const usePostsStore = defineStore('postsStore', {
     save(post, threadId) {
       post.id = '-pjvt' + Math.random() * 9999;
       post.threadId = threadId;
+      post.publishedAt = Math.floor(new Date() / 1000);
+      post.userId = useAuthStore().authId;
       this.posts.unshift(post);
       const thread = useThreadStore().threads.find((item) => item.id === threadId);
       thread.posts.unshift(post.id);
