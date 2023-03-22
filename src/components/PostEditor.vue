@@ -11,10 +11,7 @@ const postReply = ref(null);
 
 const savePost = () => {
   if (postReply.value) {
-    const post = reactive({
-      text: postReply.value,
-    });
-    emit('save-post', { post });
+    emit('save-post', postReply.value);
     postReply.value = null;
   } else {
     alert('Please write some text in the post input field !');

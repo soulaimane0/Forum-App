@@ -3,6 +3,7 @@ import sourceData from '../data.json';
 import useUserStore from './UserStore';
 import useThreadStore from './ThreadStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
+import { reactive } from 'vue';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -17,13 +18,18 @@ const usePostsStore = defineStore('postsStore', {
       state.posts.filter((item) => item.threadId === threadId),
   },
   actions: {
-    save(post, threadId) {
-      post.id = '-pjvt' + Math.random() * 9999;
-      post.threadId = threadId;
-      post.publishedAt = Math.floor(new Date() / 1000);
-      post.userId = useAuthStore().authId;
+    save(text, threadId) {
+      const post = reactive({
+        id: '-pjvt' + Math.random() * 9999,
+        text,
+        threadId,
+        publishedAt: Math.floor(new Date() / 1000),
+        userId: useAuthStore().authId,
+      });
+
       this.posts.unshift(post);
       const thread = useThreadStore().threads.find((item) => item.id === threadId);
+      thread.posts = thread.posts || [];
       thread.posts.unshift(post.id);
     },
   },

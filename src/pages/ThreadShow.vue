@@ -11,13 +11,18 @@ const postsStore = usePostsStore();
 const route = useRoute();
 const threadId = route.params.id;
 
-const savePost = (eventData) => {
-  postsStore.save(eventData.post, threadId);
+const savePost = (text) => {
+  postsStore.save(text, threadId);
 };
 </script>
 
 <template>
-  <h1 class="text-center mb-3">{{ thread(threadId).title }}</h1>
+  <div class="d-flex justify-content-between">
+    <h1 class="mb-3">{{ thread(threadId).title }}</h1>
+    <div class="d-grid align-items-center">
+      <button class="btn btn-primary fw-semibold">Update thread</button>
+    </div>
+  </div>
 
   <PostEditor @save-post="savePost" />
 
