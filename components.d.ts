@@ -19,6 +19,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheNavBar: typeof import('./src/components/TheNavBar.vue')['default']
+    ThreadEditor: typeof import('./src/components/ThreadEditor.vue')['default']
     ThreadList: typeof import('./src/components/ThreadList.vue')['default']
     UserProfileCardDetails: typeof import('./src/components/UserProfileCardDetails.vue')['default']
     UserProfileCardEditor: typeof import('./src/components/UserProfileCardEditor.vue')['default']
