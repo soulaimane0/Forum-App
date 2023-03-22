@@ -5,6 +5,7 @@ import ThreadShow from '@/pages/ThreadShow.vue';
 import Forum from '@/pages/Forum.vue';
 import Category from '@/pages/Category.vue';
 import Profile from '@/pages/Profile.vue';
+import ThreadCreate from '@/pages/ThreadCreate.vue';
 import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
@@ -80,6 +81,12 @@ const routes = [
     name: 'profileEdit',
     component: Profile,
     props: { edit: true },
+  },
+  {
+    path: '/forum/:forumId/thread/create',
+    name: 'thread-create',
+    component: ThreadCreate,
+    props: true,
   },
   {
     path: '/:pathMatch(.*)*',
