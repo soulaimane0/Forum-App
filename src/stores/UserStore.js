@@ -2,20 +2,20 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
 import usePostsStore from './PostsStore';
 import useThreadStore from './ThreadStore';
-import { ref } from 'vue';
+import { findById } from '@/helpers';
 
 const useUserStore = defineStore('userStore', {
   state: () => {
     return { users: sourceData.users };
   },
   getters: {
-    getUser: (state) => (userId) => state.users.find((item) => item.id === userId),
+    getUser: (state) => (userId) => findById(state.users, userId),
     getPostsByUser: () => (userId) =>
       usePostsStore().posts.filter((item) => item.userId === userId),
     getThreadByUser: () => (userId) =>
       useThreadStore().threads.filter((item) => item.userId === userId),
-    countUserPosts: (state) => (userId) => state.getPostsByUser(userId).length,
-    countUserThreads: (state) => (userId) => state.getThreadByUser(userId).length,
+    countUserPosts: (state) => (userId) => state.getPostsByUser(userId)?.length,
+    countUserThreads: (state) => (userId) => state.getThreadByUser(userId)?.length,
   },
   actions: {
     updateUserDetails(userData, userId) {

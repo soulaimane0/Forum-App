@@ -4,6 +4,7 @@ import useUserStore from './UserStore';
 import useThreadStore from './ThreadStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { reactive } from 'vue';
+import { findById } from '@/helpers';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -12,7 +13,7 @@ const usePostsStore = defineStore('postsStore', {
   getters: {
     getUserByPost: () => (userId) => {
       const userStore = useUserStore();
-      return userStore.users.find((user) => user.id === userId);
+      return findById(userStore.users, userId);
     },
     getPostsByThread: (state) => (threadId) =>
       state.posts.filter((item) => item.threadId === threadId),
@@ -28,9 +29,14 @@ const usePostsStore = defineStore('postsStore', {
       });
 
       this.posts.unshift(post);
-      const thread = useThreadStore().threads.find((item) => item.id === threadId);
+      const thread = findById(useThreadStore().threads, threadId);
       thread.posts = thread.posts || [];
+      thread.contributors = thread.contributors || [];
+
       thread.posts.unshift(post.id);
+      // thread.contributors.forEach((item, index) => {
+      //   if (item[index] !== item[index + 1]) thread.contributors.unshift(post.userId);
+      // });
     },
   },
 });

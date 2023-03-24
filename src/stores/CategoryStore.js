@@ -1,6 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
 import useForumStore from './ForumStore';
+import { findById } from '@/helpers';
 
 const useCategoryStore = defineStore('categoryStore', {
   state: () => {
@@ -8,7 +9,7 @@ const useCategoryStore = defineStore('categoryStore', {
   },
   getters: {
     getCategory: (state) => (categoryId) => {
-      return state.categories.find((item) => item.id === categoryId);
+      return findById(state.categories, categoryId);
     },
     getFormsByCategory: () => (categoryId) => {
       const forumStore = useForumStore();

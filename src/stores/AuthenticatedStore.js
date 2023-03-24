@@ -1,5 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import sourceData from '../data.json';
+import { findById } from '@/helpers';
 
 const useAuthStore = defineStore('AuthStore', {
   state: () => {
@@ -9,7 +10,7 @@ const useAuthStore = defineStore('AuthStore', {
     };
   },
   getters: {
-    authenticatedUser: (state) => state.users.find((item) => item.id === state.authId),
+    authenticatedUser: (state) => findById(state.users, state.authId),
   },
 });
 if (import.meta.hot) {

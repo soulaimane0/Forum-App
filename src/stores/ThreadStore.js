@@ -5,16 +5,23 @@ import useUserStore from './UserStore';
 import useAuthStore from './AuthenticatedStore';
 import usePostsStore from './PostsStore';
 import useForumStore from './ForumStore';
+import { findById } from '@/helpers';
 
 const useThreadStore = defineStore('threadStore', {
   state: () => {
     return { threads: sourceData.threads };
   },
   getters: {
-    thread: (state) => (threadId) => state.threads.find((item) => item.id === threadId),
+    thread: (state) => (threadId) => findById(state.threads, threadId),
     getUserByThread: () => (userId) => {
       const userStore = useUserStore();
-      return userStore.users.find((item) => item.id === userId);
+      return findById(userStore.users, userId);
+    },
+    countThreadPosts: (state) => (threadId) => {
+      return state.thread(threadId).posts?.length || 0;
+    },
+    countThreadContributors: (state) => (threadId) => {
+      return state.thread(threadId).contributors?.length || 0;
     },
   },
   actions: {
@@ -32,6 +39,11 @@ const useThreadStore = defineStore('threadStore', {
       forum.threads = forum.threads || [];
       forum.threads.unshift(thread.id);
       return this.thread(thread.id);
+    },
+    updateThread(title, threadId) {
+      const index = this.threads.findIndex((item) => item.id === threadId);
+      this.threads[index].title = title;
+      console.log('Updated successfully');
     },
   },
 });
