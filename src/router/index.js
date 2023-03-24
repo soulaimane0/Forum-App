@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { findById } from '@/helpers';
 import sourceData from '@/data.json';
 import Home from '@/pages/Home.vue';
 import ThreadShow from '@/pages/ThreadShow.vue';
@@ -6,6 +7,7 @@ import Forum from '@/pages/Forum.vue';
 import Category from '@/pages/Category.vue';
 import Profile from '@/pages/Profile.vue';
 import ThreadCreate from '@/pages/ThreadCreate.vue';
+import ThreadUpdate from '@/pages/ThreadUpdate.vue';
 import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
@@ -23,7 +25,7 @@ const routes = [
     name: 'category',
     component: Category,
     beforeEnter(to, from, next) {
-      const category = sourceData.categories.find((item) => item.id === to.params.id);
+      const category = findById(sourceData.categories, to.params.id);
       if (category) return next();
       else {
         return next({
@@ -40,7 +42,7 @@ const routes = [
     name: 'forum',
     component: Forum,
     beforeEnter(to, from, next) {
-      const forum = sourceData.forums.find((item) => item.id === to.params.id);
+      const forum = findById(sourceData.forums, to.params.id);
       if (forum) return next();
       else {
         return next({
@@ -58,7 +60,7 @@ const routes = [
     name: 'thread',
     beforeEnter(to, from, next) {
       //chack is the thread id exists
-      const thread = sourceData.threads.find((thread) => thread.id === to.params.id);
+      const thread = findById(sourceData.threads, to.params.id);
       if (thread) return next();
       else {
         next({
@@ -86,6 +88,12 @@ const routes = [
     path: '/forum/:forumId/thread/create',
     name: 'thread-create',
     component: ThreadCreate,
+    props: true,
+  },
+  {
+    path: '/thread/:id/update',
+    name: 'thread-update',
+    component: ThreadUpdate,
     props: true,
   },
   {
