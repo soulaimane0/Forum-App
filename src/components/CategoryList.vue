@@ -2,13 +2,14 @@
 import { computed, reactive } from 'vue';
 import sourceData from '@/data.json';
 import { useRouter } from 'vue-router';
+import { findById } from '@/helpers';
 
 const props = defineProps(['categories']);
 const router = useRouter();
 const forums = reactive(sourceData.forums);
 
 const getForumCategory = (forumId) => {
-  return forums.find((item) => item.id === forumId);
+  return findById(forums, forumId);
 };
 const toForumPage = (forumId) => {
   router.push({ name: 'forum', params: { id: forumId } });

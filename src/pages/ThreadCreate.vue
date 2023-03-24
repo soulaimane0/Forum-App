@@ -11,8 +11,8 @@ const router = useRouter();
 const { getForum } = storeToRefs(useForumStore());
 const threadStore = useThreadStore();
 
-const publish = async (title, content) => {
-  const thread = await threadStore.createThread(title, content, props.forumId);
+const publish = async (form) => {
+  const thread = await threadStore.createThread(form.title, form.content, props.forumId);
   router.push({ name: 'thread', params: { id: thread.id } });
 };
 </script>

@@ -6,7 +6,7 @@ import useUserStore from '@/stores/UserStore';
 import { storeToRefs } from 'pinia';
 
 const { getUserByPost } = storeToRefs(usePostsStore());
-const { countUserPosts } = storeToRefs(useUserStore());
+const { countUserPosts, countUserThreads } = storeToRefs(useUserStore());
 
 const props = defineProps(['posts']);
 </script>
@@ -24,6 +24,7 @@ const props = defineProps(['posts']);
           referrerpolicy="no-referrer"
         />
         <h6>{{ countUserPosts(post.userId) }} posts</h6>
+        <h6>{{ countUserThreads(post.userId) }} threads</h6>
       </div>
       <div class="col-md-10">
         <div class="card-body">
