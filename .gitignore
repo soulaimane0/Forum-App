@@ -12,6 +12,7 @@ public
 dist
 dist-ssr
 *.local
+serviceAccount.json
 
 # Editor directories and files
 .vscode/
