@@ -1,11 +1,14 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import sourceData from '../data.json';
 import useForumStore from './ForumStore';
 import { findById } from '@/helpers';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '@/helpers/firestore.js';
 
 const useCategoryStore = defineStore('categoryStore', {
   state: () => {
-    return { categories: sourceData.categories };
+    return {
+      categories: [],
+    };
   },
   getters: {
     getCategory: (state) => (categoryId) => {
@@ -16,7 +19,21 @@ const useCategoryStore = defineStore('categoryStore', {
       return forumStore.forums.filter((item) => item.categoryId === categoryId);
     },
   },
+  actions: {
+    initCategories() {
+      onSnapshot(collection(db, 'categories'), (snapshotQuery) => {
+        try {
+          snapshotQuery.forEach((doc) => {
+            this.categories.push({ ...doc.data(), id: doc.id });
+          });
+        } catch (error) {
+          console.log('While getting category data  : ', error);
+        }
+      });
+    },
+  },
 });
+
 if (import.meta.hot) {
   import.meta.hot.accept(acceptHMRUpdate(useCategoryStore, import.meta.hot));
 }
