@@ -1,8 +1,14 @@
 <script setup>
-import { reactive } from 'vue';
+import { onMounted, reactive } from 'vue';
 import useCategoryStore from '@/stores/CategoryStore.js';
 import { storeToRefs } from 'pinia';
+import useForumStore from '@/stores/ForumStore';
+
 const { categories } = storeToRefs(useCategoryStore());
+
+onMounted(async () => {
+  await useCategoryStore().fetchCategories();
+});
 </script>
 
 <template>

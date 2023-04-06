@@ -1,23 +1,30 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 
 const props = defineProps(['forumId']);
 const route = useRoute();
+const threadId = ref(route.params.id);
+
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
 
-const threadId = route.params.id;
-const thread = threadStore.thread(threadId);
+const thread = threadStore.thread(threadId.value);
 const user = threadStore.getUserByThread(thread.userId);
-const total_posts = threadStore.countThreadPosts(threadId);
-const total_contributors = threadStore.countThreadContributors(threadId);
+const total_posts = threadStore.countThreadPosts(threadId.value);
+const total_contributors = threadStore.countThreadContributors(threadId.value);
 
 const savePost = (text) => {
-  postsStore.save(text, threadId);
+  postsStore.save(text, threadId.value);
 };
+
+const posts = ref(null);
+
+onMounted(async () => {
+  posts.value = await postsStore.getPostsByThread(threadId.value);
+});
 </script>
 
 <template>
@@ -47,7 +54,7 @@ const savePost = (text) => {
 
   <PostEditor @save-post="savePost" />
 
-  <PostsList :posts="postsStore.getPostsByThread(threadId)" />
+  <PostsList :posts="posts" />
 </template>
 
 <style scoped></style>
