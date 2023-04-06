@@ -1,24 +1,57 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import sourceData from '../data.json';
-import useUserStore from './UserStore';
-import useThreadStore from './ThreadStore';
-import useAuthStore from '@/stores/AuthenticatedStore';
 import { reactive } from 'vue';
-import { findById } from '@/helpers';
+import { db } from '@/helpers/firestore.js';
+import { collection, onSnapshot, doc, query, where } from 'firebase/firestore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
-    return { posts: sourceData.posts };
+    return { posts: reactive([]) };
   },
   getters: {
     getUserByPost: () => (userId) => {
-      const userStore = useUserStore();
-      return findById(userStore.users, userId);
+      return new Promise((resolve, reject) => {
+        onSnapshot(
+          doc(db, 'users', userId),
+          (doc) => {
+            const user = { ...doc.data(), id: doc.id };
+            resolve(user);
+          },
+          reject
+        );
+      });
     },
-    getPostsByThread: (state) => (threadId) =>
-      state.posts.filter((item) => item.threadId === threadId),
+    getPostsByThread: () => (threadId) => {
+      return new Promise((resolve, reject) => {
+        const postRef = collection(db, 'posts');
+        const q = query(postRef, where('threadId', '==', threadId));
+        onSnapshot(
+          q,
+          (snapshotQuery) => {
+            const posts = snapshotQuery.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            resolve(posts);
+          },
+          reject
+        );
+      });
+    },
   },
   actions: {
+    fetchPosts() {
+      onSnapshot(collection(db, 'posts'), (snapshotQuery) => {
+        try {
+          const posts = snapshotQuery.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          this.posts = posts;
+        } catch (error) {
+          console.error('While getting posts : ', error);
+        }
+      });
+    },
     save(text, threadId) {
       const post = reactive({
         id: '-pjvt' + Math.random() * 9999,

@@ -1,33 +1,60 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import useForumStore from './ForumStore';
-import { findById } from '@/helpers';
-import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '@/helpers/firestore.js';
+import { collection, onSnapshot, doc, query, where } from 'firebase/firestore';
+import { reactive } from 'vue';
 
 const useCategoryStore = defineStore('categoryStore', {
   state: () => {
     return {
-      categories: [],
+      categories: reactive([]),
     };
   },
   getters: {
-    getCategory: (state) => (categoryId) => {
-      return findById(state.categories, categoryId);
+    getCategory: () => (categoryId) => {
+      return new Promise((resolve, reject) => {
+        onSnapshot(
+          doc(db, 'categories', categoryId),
+          (doc) => {
+            const category = { ...doc.data(), id: doc.id };
+            resolve(category);
+          },
+          reject
+        );
+      });
     },
     getFormsByCategory: () => (categoryId) => {
-      const forumStore = useForumStore();
-      return forumStore.forums.filter((item) => item.categoryId === categoryId);
+      return new Promise((resolve, reject) => {
+        const forumRef = collection(db, 'forums');
+        const q = query(forumRef, where('categoryId', '==', categoryId));
+        onSnapshot(
+          q,
+          (snapshotQuery) => {
+            try {
+              const forums = snapshotQuery.docs.map((doc) => ({
+                ...doc.data(),
+                id: doc.id,
+              }));
+              resolve(forums);
+            } catch (error) {
+              console.error('While getting fourms : ', error);
+            }
+          },
+          reject
+        );
+      });
     },
   },
   actions: {
-    initCategories() {
+    fetchCategories() {
       onSnapshot(collection(db, 'categories'), (snapshotQuery) => {
         try {
-          snapshotQuery.forEach((doc) => {
-            this.categories.push({ ...doc.data(), id: doc.id });
-          });
+          const categories = snapshotQuery.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          this.categories = categories;
         } catch (error) {
-          console.log('While getting category data  : ', error);
+          console.error('While getting categories : ', error);
         }
       });
     },
