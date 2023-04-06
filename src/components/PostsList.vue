@@ -12,12 +12,12 @@ const props = defineProps(['posts']);
 </script>
 
 <template>
-  <div class="card shadow border-0 mb-3 p-3" v-for="post in posts" :key="post.id">
+  <div v-for="post in posts" :key="post.id" class="card shadow border-0 mb-3 p-3">
     <div class="row g-0">
       <div class="col-md-2 d-flex flex-column align-items-center">
-        <h5>{{ getUserByPost(post.userId).username }}</h5>
+        <h5>{{ getUserByPost(post.userId)?.username }}</h5>
         <img
-          :src="getUserByPost(post.userId).avatar"
+          :src="getUserByPost(post.userId)?.avatar"
           style="width: 95px; height: 95px"
           class="rounded-circle"
           alt="User picture"

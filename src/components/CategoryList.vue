@@ -1,5 +1,5 @@
 <script setup>
-import { computed, reactive } from 'vue';
+import { reactive } from 'vue';
 import sourceData from '@/data.json';
 import { useRouter } from 'vue-router';
 import { findById } from '@/helpers';
