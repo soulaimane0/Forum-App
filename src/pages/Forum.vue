@@ -10,7 +10,6 @@ const forumId = ref(route.params.id);
 const forums = ref(null);
 const threads = ref(null);
 onMounted(async () => {
-  await forumStore.fetchForums();
   forums.value = await forumStore.getForum(forumId.value);
   threads.value = await forumStore.getThreadsByForum(forumId.value);
 });

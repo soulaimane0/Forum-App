@@ -1,10 +1,22 @@
 <script setup>
-import { computed, reactive, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import useThreadStore from '@/stores/ThreadStore';
-import { storeToRefs } from 'pinia';
 
-const { getUserByThread } = storeToRefs(useThreadStore());
+const threadStore = useThreadStore();
 const props = defineProps(['threads']);
+const user_id = ref(null);
+
+const getUserData = async (userId) => {
+  user_id.value = userId;
+  return await threadStore.getUserByThread(userId);
+};
+
+// onMounted(async () => {
+//   if (user_id.value) {
+//     await getUserData(user_id.value);
+//     console.log(getUserData(user_id.value));
+//   }
+// });
 </script>
 
 <template>
@@ -28,23 +40,7 @@ const props = defineProps(['threads']);
                 class="text-decoration-none"
                 :to="{ name: 'thread', params: { id: thread.id } }"
               >
-                <div class="d-flex align-items-center">
-                  <img
-                    :src="getUserByThread(thread.userId).avatar"
-                    alt="user profile"
-                    style="width: 45px; height: 45px"
-                    class="rounded-circle"
-                    referrerpolicy="no-referrer"
-                  />
-                  <div class="ms-3">
-                    <p class="fw-bold mb-1">
-                      {{ getUserByThread(thread.userId).name }}
-                    </p>
-                    <p class="text-muted mb-0">
-                      {{ getUserByThread(thread.userId).email }}
-                    </p>
-                  </div>
-                </div>
+                <UserDetails :userId="thread.userId" />
               </RouterLink>
             </td>
             <td>
@@ -53,7 +49,7 @@ const props = defineProps(['threads']);
                 <p>
                   by
                   <span class="fw-semibold">
-                    {{ getUserByThread(thread.userId).name }}
+                    {{ getUserData(thread.userId)?.name }}
                   </span>
                   ,
                 </p>

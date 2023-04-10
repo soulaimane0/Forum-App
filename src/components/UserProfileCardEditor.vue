@@ -24,8 +24,8 @@ const cancel = () => {
   <div class="card border-0 shadow">
     <div class="card-header text-center border-0 bg-white">
       <img
-        :src="user.avatar"
-        :alt="`${user.name} profile picture`"
+        :src="user?.avatar"
+        :alt="`${user?.name} profile picture`"
         class="rounded-circle"
         width="120"
         height="120"

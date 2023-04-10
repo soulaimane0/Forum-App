@@ -21,7 +21,7 @@ const update = async (form) => {
 
 <template>
   <h1>
-    Editing <em>{{ thread(threadId).title }}</em>
+    Editing <em>{{ thread(threadId)?.title }}</em>
   </h1>
   <ThreadEditor
     :title="thread(threadId).title"
