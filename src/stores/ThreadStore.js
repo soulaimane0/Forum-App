@@ -1,30 +1,60 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
-import sourceData from '../data.json';
-import useUserStore from './UserStore';
-import useAuthStore from './AuthenticatedStore';
-import usePostsStore from './PostsStore';
-import useForumStore from './ForumStore';
-import { findById } from '@/helpers';
+import { db } from '@/helpers/firestore.js';
+import { collection, doc, onSnapshot } from 'firebase/firestore';
 
 const useThreadStore = defineStore('threadStore', {
   state: () => {
-    return { threads: sourceData.threads };
+    return {
+      threads: reactive([]),
+    };
   },
   getters: {
-    thread: (state) => (threadId) => findById(state.threads, threadId),
+    thread: () => (threadId) => {
+      return new Promise((resolve, reject) => {
+        onSnapshot(
+          doc(db, 'threads', threadId),
+          (doc) => {
+            const thread = { ...doc.data(), id: doc.id };
+            resolve(thread);
+          },
+          reject
+        );
+      });
+    },
     getUserByThread: () => (userId) => {
-      const userStore = useUserStore();
-      return findById(userStore.users, userId);
+      return new Promise((resolve, reject) => {
+        onSnapshot(
+          doc(db, 'users', userId),
+          (doc) => {
+            const user = { ...doc.data(), id: doc.id };
+            resolve(user);
+          },
+          reject
+        );
+      });
     },
-    countThreadPosts: (state) => (threadId) => {
-      return state.thread(threadId).posts?.length || 0;
+    countThreadPosts: (state) => async (threadId) => {
+      const number_of_posts = (await state.thread(threadId).posts?.length) || 0;
+      return number_of_posts;
     },
-    countThreadContributors: (state) => (threadId) => {
-      return state.thread(threadId).contributors?.length || 0;
+    countThreadContributors: (state) => async (threadId) => {
+      const number_of_contributors =
+        (await state.thread(threadId).contributors?.length) || 0;
+      return number_of_contributors;
     },
   },
   actions: {
+    fetchThreads() {
+      onSnapshot(collection(db, 'threads'), (snapshotQuery) => {
+        try {
+          const docs = snapshotQuery.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+          this.threads = docs;
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    },
     async createThread(title, text, forumId) {
       const thread = reactive({
         id: '-fgdv' + Math.random() * 9999,
