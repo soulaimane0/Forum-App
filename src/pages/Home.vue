@@ -3,7 +3,9 @@ import { onMounted, reactive } from 'vue';
 import useCategoryStore from '@/stores/CategoryStore.js';
 import { storeToRefs } from 'pinia';
 import useForumStore from '@/stores/ForumStore';
+import useThreadStore from '@/stores/ThreadStore';
 
+const threadStore = useThreadStore();
 const { categories } = storeToRefs(useCategoryStore());
 
 onMounted(async () => {

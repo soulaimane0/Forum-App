@@ -6,17 +6,17 @@ const threadStore = useThreadStore();
 const props = defineProps(['threads']);
 const user_id = ref(null);
 
-const getUserData = async (userId) => {
-  user_id.value = userId;
-  return await threadStore.getUserByThread(userId);
-};
+// const getUserData = async (userId) => {
+//   user_id.value = userId;
+//   return await threadStore.getUserByThread(userId);
+// };
 
-// onMounted(async () => {
-//   if (user_id.value) {
-//     await getUserData(user_id.value);
-//     console.log(getUserData(user_id.value));
-//   }
-// });
+onMounted(async () => {
+  //   if (user_id.value) {
+  //     await getUserData(user_id.value);
+  //     console.log(getUserData(user_id.value));
+  //   }
+});
 </script>
 
 <template>
@@ -40,7 +40,23 @@ const getUserData = async (userId) => {
                 class="text-decoration-none"
                 :to="{ name: 'thread', params: { id: thread.id } }"
               >
-                <UserDetails :userId="thread.userId" />
+                <div class="d-flex align-items-center">
+                  <img
+                    :src="thread.user?.avatar"
+                    alt="user profile"
+                    style="width: 45px; height: 45px"
+                    class="rounded-circle"
+                    referrerpolicy="no-referrer"
+                  />
+                  <div class="ms-3">
+                    <p class="fw-bold mb-1">
+                      {{ thread.user?.name }}
+                    </p>
+                    <p class="text-muted mb-0">
+                      {{ thread.user?.email }}
+                    </p>
+                  </div>
+                </div>
               </RouterLink>
             </td>
             <td>
@@ -49,7 +65,7 @@ const getUserData = async (userId) => {
                 <p>
                   by
                   <span class="fw-semibold">
-                    {{ getUserData(thread.userId)?.name }}
+                    {{ thread.user?.name }}
                   </span>
                   ,
                 </p>

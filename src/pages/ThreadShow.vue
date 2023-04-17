@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
@@ -14,13 +14,26 @@ const postsStore = usePostsStore();
 const posts = ref(null);
 const thread = ref(null);
 const user = ref(null);
-const total_posts = threadStore.countThreadPosts(threadId.value);
+
+const totalPosts = async () => {
+  const count = await threadStore.countThreadPosts(threadId.value);
+  console.log('This is count logged: ', count);
+  return count;
+};
+
+const total_posts = computed(async () => {
+  return await totalPosts();
+});
+
 const total_contributors = threadStore.countThreadContributors(threadId.value);
 
 onMounted(async () => {
+  await postsStore.fetchPosts();
+  await threadStore.fetchThreads();
   posts.value = await postsStore.getPostsByThread(threadId.value);
   thread.value = await threadStore.thread(threadId.value);
   user.value = await threadStore.getUserByThread(thread.value.userId);
+  console.log(posts.value);
 });
 
 const savePost = (text) => {
