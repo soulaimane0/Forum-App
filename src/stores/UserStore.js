@@ -2,6 +2,8 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { db } from '@/helpers/firestore.js';
 import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
+import usePostsStore from '@/stores/PostsStore';
+import useThreadStore from '@/stores/ThreadStore';
 
 const useUserStore = defineStore('userStore', {
   state: () => {
@@ -62,10 +64,10 @@ const useUserStore = defineStore('userStore', {
         );
       });
     },
-    countUserPosts: (state) => async (userId) =>
-      await state.getPostsByUser(userId)?.length,
-    countUserThreads: (state) => async (userId) =>
-      await state.getThreadByUser(userId)?.length,
+    countUserPosts: () => (userId) =>
+      usePostsStore().posts.filter((post) => post.userId === userId)?.length,
+    countUserThreads: () => (userId) =>
+      useThreadStore().threads.filter((thread) => thread.userId === userId)?.length,
   },
   actions: {
     fetchUsers() {

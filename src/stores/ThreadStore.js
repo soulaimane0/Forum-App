@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { db } from '@/helpers/firestore.js';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
 
 const useThreadStore = defineStore('threadStore', {
   state: () => {
@@ -35,7 +35,9 @@ const useThreadStore = defineStore('threadStore', {
       });
     },
     countThreadPosts: (state) => async (threadId) => {
-      const number_of_posts = (await state.thread(threadId).posts?.length) || 0;
+      const thread = await state.thread(threadId);
+      const number_of_posts = thread.posts?.length || 0;
+      console.log(number_of_posts);
       return number_of_posts;
     },
     countThreadContributors: (state) => async (threadId) => {
@@ -45,11 +47,14 @@ const useThreadStore = defineStore('threadStore', {
     },
   },
   actions: {
-    fetchThreads() {
+    async fetchThreads() {
       onSnapshot(collection(db, 'threads'), (snapshotQuery) => {
         try {
-          const docs = snapshotQuery.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-          this.threads = docs;
+          const threads = snapshotQuery.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+          this.threads = threads;
         } catch (error) {
           console.error(error);
         }

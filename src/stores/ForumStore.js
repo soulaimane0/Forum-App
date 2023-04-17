@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { db } from '@/helpers/firestore.js';
-import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, query, where } from 'firebase/firestore';
 import { reactive } from 'vue';
 
 const useForumStore = defineStore('forumStore', {
@@ -34,11 +34,17 @@ const useForumStore = defineStore('forumStore', {
           q,
           (snapshotQuery) => {
             try {
+              const mappedThreads = reactive([]);
               const threads = snapshotQuery.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id,
               }));
-              resolve(threads);
+              threads.forEach(async (thread) => {
+                const userDoc = await getDoc(doc(db, 'users', thread.userId));
+                const user = { ...userDoc.data(), id: userDoc.id };
+                mappedThreads.push({ ...thread, user });
+              });
+              resolve(mappedThreads);
             } catch (error) {
               console.error('While getting threads : ', error);
             }

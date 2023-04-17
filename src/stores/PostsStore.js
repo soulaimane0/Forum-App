@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { db } from '@/helpers/firestore.js';
-import { collection, onSnapshot, doc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, doc, query, where, getDoc } from 'firebase/firestore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -27,11 +27,17 @@ const usePostsStore = defineStore('postsStore', {
         onSnapshot(
           q,
           (snapshotQuery) => {
+            const mappedPosts = reactive([]);
             const posts = snapshotQuery.docs.map((doc) => ({
               ...doc.data(),
               id: doc.id,
             }));
-            resolve(posts);
+            posts.forEach(async (post) => {
+              const userDoc = await getDoc(doc(db, 'users', post.userId));
+              const user = { ...userDoc.data(), id: userDoc.id };
+              mappedPosts.push({ ...post, user });
+            });
+            resolve(mappedPosts);
           },
           reject
         );
@@ -74,7 +80,7 @@ const usePostsStore = defineStore('postsStore', {
   },
 });
 
-// if (import.meta.hot) {
-//   import.meta.hot.accept(acceptHMRUpdate(useThreadStore, import.meta.hot));
-// }
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(usePostsStore, import.meta.hot));
+}
 export default usePostsStore;
