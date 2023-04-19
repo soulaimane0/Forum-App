@@ -36,14 +36,11 @@ const useThreadStore = defineStore('threadStore', {
     },
     countThreadPosts: (state) => async (threadId) => {
       const thread = await state.thread(threadId);
-      const number_of_posts = thread.posts?.length || 0;
-      console.log(number_of_posts);
-      return number_of_posts;
+      return thread.posts?.length || 0;
     },
     countThreadContributors: (state) => async (threadId) => {
-      const number_of_contributors =
-        (await state.thread(threadId).contributors?.length) || 0;
-      return number_of_contributors;
+      const thread = await state.thread(threadId);
+      return thread.contributors?.length || 0;
     },
   },
   actions: {

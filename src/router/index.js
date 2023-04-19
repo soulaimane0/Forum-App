@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { findById } from '@/helpers';
-import sourceData from '@/data.json';
+import { db } from '@/helpers/firestore.js';
+import { doc, getDoc } from 'firebase/firestore';
 import Home from '@/pages/Home.vue';
 import ThreadShow from '@/pages/ThreadShow.vue';
 import Forum from '@/pages/Forum.vue';
@@ -24,8 +24,10 @@ const routes = [
     path: '/category/:id',
     name: 'category',
     component: Category,
-    beforeEnter(to, from, next) {
-      const category = findById(sourceData.categories, to.params.id);
+    async beforeEnter(to, from, next) {
+      //chack if the category id exists
+      const categoryDoc = doc(db, 'categories', to.params.id);
+      const category = await getDoc(categoryDoc);
       if (category) return next();
       else {
         return next({
@@ -41,8 +43,10 @@ const routes = [
     path: '/forum/:id',
     name: 'forum',
     component: Forum,
-    beforeEnter(to, from, next) {
-      const forum = findById(sourceData.forums, to.params.id);
+    async beforeEnter(to, from, next) {
+      //chack if the forum id exists
+      const forumDoc = doc(db, 'forums', to.params.id);
+      const forum = await getDoc(forumDoc);
       if (forum) return next();
       else {
         return next({
@@ -58,9 +62,10 @@ const routes = [
     path: '/thread/:id',
     component: ThreadShow,
     name: 'thread',
-    beforeEnter(to, from, next) {
-      //chack is the thread id exists
-      const thread = findById(sourceData.threads, to.params.id);
+    async beforeEnter(to, from, next) {
+      //chack if the thread id exists
+      const threadDoc = doc(db, 'threads', to.params.id);
+      const thread = await getDoc(threadDoc);
       if (thread) return next();
       else {
         next({

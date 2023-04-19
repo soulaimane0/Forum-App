@@ -1,6 +1,6 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { db } from '@/helpers/firestore.js';
-import { collection, onSnapshot, doc, query, where } from 'firebase/firestore';
+import { collection, onSnapshot, doc, query, where, getDoc } from 'firebase/firestore';
 import { reactive } from 'vue';
 
 const useCategoryStore = defineStore('categoryStore', {
@@ -46,13 +46,23 @@ const useCategoryStore = defineStore('categoryStore', {
   },
   actions: {
     fetchCategories() {
-      onSnapshot(collection(db, 'categories'), (snapshotQuery) => {
+      onSnapshot(collection(db, 'categories'), async (snapshotQuery) => {
         try {
-          const categories = snapshotQuery.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          this.categories = categories;
+          const mappedCategories = reactive([]);
+          for (const categoryDoc of snapshotQuery.docs) {
+            const category = { ...categoryDoc.data(), id: categoryDoc.id };
+            const fullForums = reactive([]);
+            for (const forumId of category.forums) {
+              const forumDoc = await getDoc(doc(db, 'forums', forumId));
+              if (forumDoc.exists()) {
+                const forum = { ...forumDoc.data(), id: forumDoc.id };
+                fullForums.push(forum);
+              }
+            }
+            category.fullForums = fullForums;
+            mappedCategories.push(category);
+          }
+          this.categories = mappedCategories;
         } catch (error) {
           console.error('While getting categories : ', error);
         }
