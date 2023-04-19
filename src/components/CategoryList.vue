@@ -1,16 +1,9 @@
 <script setup>
-import { reactive } from 'vue';
-import sourceData from '@/data.json';
 import { useRouter } from 'vue-router';
-import { findById } from '@/helpers';
 
 const props = defineProps(['categories']);
 const router = useRouter();
-const forums = reactive(sourceData.forums);
 
-const getForumCategory = (forumId) => {
-  return findById(forums, forumId);
-};
 const toForumPage = (forumId) => {
   router.push({ name: 'forum', params: { id: forumId } });
 };
@@ -32,35 +25,35 @@ const toForumPage = (forumId) => {
                 class="text-light text-decoration-none"
                 :to="{ name: 'category', params: { id: category.id } }"
               >
-                {{ category.name }} -->
+                {{ category?.name }} -->
               </RouterLink>
             </th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="forum in category.forums"
-            :key="forum"
+            v-for="forum in category.fullForums"
+            :key="forum.id"
             style="cursor: pointer"
-            @click="toForumPage(forum)"
+            @click="toForumPage(forum.id)"
           >
             <td>
               <div>
-                <h4 class="text-primary-600">{{ getForumCategory(forum).name }}</h4>
-                <p>{{ getForumCategory(forum).description }}</p>
+                <h4 class="text-primary-600">{{ forum.name }}</h4>
+                <p>{{ forum.description }}</p>
               </div>
             </td>
 
             <td>
               <div class="text-center">
                 <p class="fw-semibold fs-4">
-                  {{ getForumCategory(forum).threads?.length }}
+                  {{ forum.threads?.length }}
                 </p>
                 <p>
                   {{
-                    getForumCategory(forum).threads?.length > 1
+                    forum.threads?.length > 1
                       ? 'Threads'
-                      : getForumCategory(forum).threads?.length === 1
+                      : forum.threads?.length === 1
                       ? 'Thread'
                       : 'No Threads'
                   }}

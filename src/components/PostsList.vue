@@ -1,6 +1,4 @@
 <script setup>
-import { reactive, computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
 import usePostsStore from '@/stores/PostsStore';
 import useUserStore from '@/stores/UserStore';
 import { storeToRefs } from 'pinia';
@@ -31,7 +29,10 @@ const props = defineProps(['posts']);
           <p class="card-text">
             {{ post.text }}
           </p>
-          <BaseDate class="d-flex justify-content-end" :timestamp="post.publishedAt" />
+          <BaseDate
+            class="d-flex justify-content-end"
+            :timestamp="parseInt(post.publishedAt)"
+          />
         </div>
       </div>
     </div>

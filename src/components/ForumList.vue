@@ -1,6 +1,4 @@
 <script setup>
-import { computed, reactive } from 'vue';
-import sourceData from '@/data.json';
 import { useRouter } from 'vue-router';
 
 const props = defineProps(['forums']);
