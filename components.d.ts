@@ -21,6 +21,7 @@ declare module '@vue/runtime-core' {
     TheNavBar: typeof import('./src/components/TheNavBar.vue')['default']
     ThreadEditor: typeof import('./src/components/ThreadEditor.vue')['default']
     ThreadList: typeof import('./src/components/ThreadList.vue')['default']
+    ThreadPostsAndContributersCount: typeof import('./src/components/ThreadPostsAndContributersCount.vue')['default']
     UserDetails: typeof import('./src/components/UserDetails.vue')['default']
     UserProfileCardDetails: typeof import('./src/components/UserProfileCardDetails.vue')['default']
     UserProfileCardEditor: typeof import('./src/components/UserProfileCardEditor.vue')['default']
