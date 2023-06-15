@@ -2,11 +2,16 @@
 import { onMounted, ref } from 'vue';
 import useForumStore from '@/stores/ForumStore';
 import useThreadStore from '@/stores/ThreadStore';
+import usePostsStore from '@/stores/PostsStore';
+import useAuthStore from '@/stores/AuthenticatedStore';
 import { useRouter } from 'vue-router';
 
 const props = defineProps(['forumId']);
 const router = useRouter();
 const threadStore = useThreadStore();
+const postsStore = usePostsStore();
+const authStore = useAuthStore();
+
 const forum = ref(null);
 
 onMounted(async () => {
@@ -14,8 +19,13 @@ onMounted(async () => {
 });
 
 const publish = async (form) => {
-  const thread = await threadStore.createThread(form.title, form.content, props.forumId);
-  router.push({ name: 'thread', params: { id: thread.id } });
+  const thread = await threadStore.createThread(
+    props.forumId,
+    form.title,
+    authStore.authId
+  );
+  await postsStore.createPost(form.content, thread, authStore.authId);
+  router.push({ name: 'thread', params: { id: thread } });
 };
 </script>
 

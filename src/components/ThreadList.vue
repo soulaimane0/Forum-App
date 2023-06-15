@@ -74,7 +74,7 @@ onMounted(async () => {
             </td>
             <td>
               <p>
-                <span class="fw-bold">{{ thread.posts.length }}</span> replys
+                <span class="fw-bold">{{ thread.posts?.length }}</span> replys
               </p>
             </td>
           </tr>

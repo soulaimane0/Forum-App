@@ -25,8 +25,9 @@ onMounted(async () => {
   user.value = await threadStore.getUserByThread(thread.value.userId);
 });
 
-const savePost = (text) => {
+const savePost = async (text) => {
   postsStore.createPost(text, threadId.value, authStore.authId);
+  posts.value = await postsStore.getPostsByThread(threadId.value);
 };
 </script>
 
@@ -42,7 +43,7 @@ const savePost = (text) => {
   <div class="d-flex justify-content-between text-secondary">
     <p>
       By {{ user?.name }},
-      <BaseDate :timestamp="parseInt(thread?.publishedAt)" />
+      <BaseDate :timestamp="thread?.publishedAt" />
     </p>
     <threadPostsAndContributersCount :threadId="threadId" />
   </div>
