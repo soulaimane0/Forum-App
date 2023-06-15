@@ -8,22 +8,22 @@ dayjs.extend(localizedFormat);
 
 const props = defineProps({
   timestamp: {
-    type: Number,
+    type: [Number, Object],
     required: true,
   },
 });
 
-const fullDate = (timestamp) => {
-  return dayjs.unix(timestamp).format('llll');
+const fullDate = () => {
+  return dayjs.unix(props.timestamp?.seconds || props.timestamp).format('llll');
 };
-const diffDate = (timestamp) => {
-  return dayjs.unix(timestamp).fromNow();
+const diffDate = () => {
+  return dayjs.unix(props.timestamp?.seconds || props.timestamp).fromNow();
 };
 </script>
 
 <template>
-  <span :title="fullDate(timestamp)">
-    <small class="text-muted"> {{ diffDate(timestamp) }} </small>
+  <span :title="fullDate()">
+    <small class="text-muted"> {{ diffDate() }} </small>
   </span>
 </template>
 
