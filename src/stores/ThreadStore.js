@@ -1,7 +1,15 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { db } from '@/helpers/firestore.js';
-import { collection, doc, onSnapshot, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  onSnapshot,
+  updateDoc,
+  writeBatch,
+  serverTimestamp,
+  arrayUnion,
+} from 'firebase/firestore';
 
 const useThreadStore = defineStore('threadStore', {
   state: () => {
@@ -57,20 +65,36 @@ const useThreadStore = defineStore('threadStore', {
         }
       });
     },
-    async createThread(title, text, forumId) {
-      const thread = reactive({
-        id: '-fgdv' + Math.random() * 9999,
-        title,
-        publishedAt: Math.floor(new Date() / 1000),
-        forumId,
-        userId: useAuthStore().authId,
-      });
-      this.threads.unshift(thread);
-      usePostsStore().save(text, thread.id);
-      const forum = useForumStore().getForum(forumId);
-      forum.threads = forum.threads || [];
-      forum.threads.unshift(thread.id);
-      return this.thread(thread.id);
+    async createThread(forumId, title, userId) {
+      try {
+        const batche = writeBatch(db);
+
+        const threadRef = doc(collection(db, 'threads'));
+        const thread = reactive({
+          contributors: [userId],
+          forumId,
+          publishedAt: serverTimestamp(),
+          title,
+          userId,
+        });
+
+        batche.set(threadRef, thread);
+        console.log('New thread has been created successfully ! ', threadRef.id);
+
+        const forumRef = doc(db, 'forums', forumId);
+        const userRef = doc(db, 'users', userId);
+        batche.update(forumRef, {
+          threads: arrayUnion(threadRef.id),
+        });
+        batche.update(userRef, {
+          threads: arrayUnion(threadRef.id),
+        });
+
+        await batche.commit();
+        return threadRef.id;
+      } catch (error) {
+        console.error(error);
+      }
     },
     updateThread(title, threadId) {
       const index = this.threads.findIndex((item) => item.id === threadId);

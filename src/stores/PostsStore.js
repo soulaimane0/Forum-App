@@ -12,11 +12,14 @@ import {
   updateDoc,
   arrayUnion,
   writeBatch,
+  serverTimestamp,
 } from 'firebase/firestore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
-    return { posts: reactive([]) };
+    return {
+      posts: reactive([]),
+    };
   },
   getters: {
     getUserByPost: () => (userId) => {
@@ -89,6 +92,7 @@ const usePostsStore = defineStore('postsStore', {
         batch.update(threadRef, {
           posts: arrayUnion(postRef.id),
           contributors: arrayUnion(userId),
+          lastPostAt: serverTimestamp(),
         });
 
         await batch.commit();
