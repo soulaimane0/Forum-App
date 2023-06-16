@@ -1,6 +1,7 @@
 <script setup>
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { storeToRefs } from 'pinia';
+import { handleImgError } from '@/helpers';
 
 const { authenticatedUser, authId } = storeToRefs(useAuthStore());
 </script>
@@ -39,6 +40,7 @@ const { authenticatedUser, authId } = storeToRefs(useAuthStore());
         <ul class="d-flex align-items-center list-unstyled m-0">
           <li class="me-2">
             <img
+              @error="handleImgError"
               :src="authenticatedUser.avatar"
               :alt="`${authenticatedUser.username} profile picture`"
               class="img-fluid rounded-circle"

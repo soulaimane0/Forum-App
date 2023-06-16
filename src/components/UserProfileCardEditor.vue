@@ -1,6 +1,7 @@
 <script setup>
 import { reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { handleImgError } from '@/helpers';
 
 const props = defineProps(['user', 'postsCount', 'threadsCount']);
 const emits = defineEmits(['update-user-profile']);
@@ -21,9 +22,10 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="card border-0 shadow">
+  <div class="card border-0 shadow" v-if="activeUser">
     <div class="card-header text-center border-0 bg-white">
       <img
+        @error="handleImgError"
         :src="user?.avatar"
         :alt="`${user?.name} profile picture`"
         class="rounded-circle"
@@ -95,5 +97,8 @@ const cancel = () => {
         <button class="btn btn-primary" @click="save">Save</button>
       </div>
     </div>
+  </div>
+  <div v-else>
+    <p>Loading...</p>
   </div>
 </template>
