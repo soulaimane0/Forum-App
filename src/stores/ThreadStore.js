@@ -96,10 +96,14 @@ const useThreadStore = defineStore('threadStore', {
         console.error(error);
       }
     },
-    updateThread(title, threadId) {
+    async updateThread(title, threadId) {
+      const threadRef = doc(db, 'threads', threadId);
+      await updateDoc(threadRef, {
+        title,
+      });
+      console.log('Thread updated successfully !');
       const index = this.threads.findIndex((item) => item.id === threadId);
       this.threads[index].title = title;
-      console.log('Updated successfully');
     },
   },
 });

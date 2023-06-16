@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { db } from '@/helpers/firestore.js';
-import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import usePostsStore from '@/stores/PostsStore';
 import useThreadStore from '@/stores/ThreadStore';
 
@@ -80,10 +80,19 @@ const useUserStore = defineStore('userStore', {
         }
       });
     },
-    updateUserDetails(userData, userId) {
-      const userIndex = this.users.findIndex((item) => item.id === userId);
-      this.users[userIndex] = userData;
-      console.log('Updated Successfilly !!!');
+    async updateUserDetails(userData, userId) {
+      try {
+        const userRef = doc(db, 'users', userId);
+
+        await updateDoc(userRef, {
+          email: userData.email,
+          name: userData.name,
+          username: userData.username,
+        });
+        console.log('User Updated Successfilly !!!');
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 });
