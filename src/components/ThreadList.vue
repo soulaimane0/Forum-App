@@ -1,22 +1,7 @@
 <script setup>
-import { onMounted, ref, computed } from 'vue';
-import useThreadStore from '@/stores/ThreadStore';
+import { handleImgError } from '@/helpers';
 
-const threadStore = useThreadStore();
 const props = defineProps(['threads']);
-const user_id = ref(null);
-
-// const getUserData = async (userId) => {
-//   user_id.value = userId;
-//   return await threadStore.getUserByThread(userId);
-// };
-
-onMounted(async () => {
-  //   if (user_id.value) {
-  //     await getUserData(user_id.value);
-  //     console.log(getUserData(user_id.value));
-  //   }
-});
 </script>
 
 <template>
@@ -42,6 +27,7 @@ onMounted(async () => {
               >
                 <div class="d-flex align-items-center">
                   <img
+                    @error="handleImgError"
                     :src="thread.user?.avatar"
                     alt="user profile"
                     style="width: 45px; height: 45px"

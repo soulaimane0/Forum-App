@@ -50,7 +50,7 @@ const savePost = async (text) => {
 
   <PostEditor @save-post="savePost" />
 
-  <PostsList :posts="posts" />
+  <PostsList v-if="posts" :posts="posts" />
 </template>
 
 <style scoped></style>

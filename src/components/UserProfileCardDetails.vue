@@ -1,4 +1,6 @@
 <script setup>
+import { handleImgError } from '@/helpers';
+
 const props = defineProps(['user', 'postsCount', 'threadsCount']);
 </script>
 
@@ -6,6 +8,7 @@ const props = defineProps(['user', 'postsCount', 'threadsCount']);
   <div class="card border-0 shadow">
     <div class="card-header text-center border-0 bg-white">
       <img
+        @error="handleImgError"
         :src="user?.avatar"
         :alt="`${user?.username} profile picture`"
         class="rounded-circle"
