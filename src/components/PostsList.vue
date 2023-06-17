@@ -1,5 +1,23 @@
 <script setup>
+import usePostsStore from '@/stores/PostsStore';
+import useAuthStore from '@/stores/AuthenticatedStore';
+import { ref } from 'vue';
+
 const props = defineProps(['posts']);
+const emit = defineEmits(['getPosts']);
+const postsStore = usePostsStore();
+const authStore = useAuthStore();
+
+const editing = ref(null);
+const handleEdit = (id) => {
+  editing.value = editing.value === id ? null : id;
+};
+
+const updatePost = async (post) => {
+  await postsStore.updatePost(post.text, post.id);
+  emit('getPosts');
+  editing.value = null;
+};
 </script>
 
 <template>
@@ -9,14 +27,30 @@ const props = defineProps(['posts']);
         <PostCardUserInfo :userId="post.userId" />
       </div>
       <div class="col-md-10">
-        <div class="card-body">
-          <p class="card-text">
-            {{ post.text }}
-          </p>
-          <BaseDate
-            class="d-flex justify-content-end"
-            :timestamp="parseInt(post.publishedAt)"
-          />
+        <div class="card-body h-100 d-flex flex-column justify-content-between">
+          <div class="d-flex justify-content-between">
+            <PostEditor
+              class="w-100"
+              v-if="editing === post.id"
+              :post="post"
+              @save-post="updatePost"
+            />
+            <p v-else class="card-text">
+              {{ post.text }}
+            </p>
+            <a
+              v-if="post.userId === authStore.authId"
+              @click.prevent="handleEdit(post.id)"
+              href="#"
+              class="ps-3 text-dark"
+            >
+              <fa icon="fa-pencil" />
+            </a>
+          </div>
+          <div class="align-self-end text-end">
+            <div class="text-muted" v-if="post.edited?.at"><small>edited</small></div>
+            <BaseDate :timestamp="parseInt(post.publishedAt)" />
+          </div>
         </div>
       </div>
     </div>

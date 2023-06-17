@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
@@ -17,17 +17,20 @@ const posts = ref(null);
 const thread = ref(null);
 const user = ref(null);
 
-onMounted(async () => {
+const getPosts = async () => {
   await postsStore.fetchPosts();
-  await threadStore.fetchThreads();
   posts.value = await postsStore.getPostsByThread(threadId.value);
+};
+onMounted(async () => {
+  await getPosts();
+  await threadStore.fetchThreads();
   thread.value = await threadStore.thread(threadId.value);
   user.value = await threadStore.getUserByThread(thread.value.userId);
 });
 
-const savePost = async (text) => {
-  postsStore.createPost(text, threadId.value, authStore.authId);
-  posts.value = await postsStore.getPostsByThread(threadId.value);
+const addPost = async (post) => {
+  postsStore.createPost(post.text, threadId.value, authStore.authId);
+  await getPosts();
 };
 </script>
 
@@ -48,9 +51,7 @@ const savePost = async (text) => {
     <threadPostsAndContributersCount :threadId="threadId" />
   </div>
 
-  <PostEditor @save-post="savePost" />
+  <PostEditor class="mb-4" @save-post="addPost" />
 
-  <PostsList v-if="posts" :posts="posts" />
+  <PostsList v-if="posts" :posts="posts" @getPosts="getPosts" />
 </template>
-
-<style scoped></style>

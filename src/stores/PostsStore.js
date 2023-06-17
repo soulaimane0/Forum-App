@@ -14,6 +14,7 @@ import {
   writeBatch,
   serverTimestamp,
 } from 'firebase/firestore';
+import useAuthStore from '@/stores/AuthenticatedStore';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -52,6 +53,7 @@ const usePostsStore = defineStore('postsStore', {
               mappedPosts.push({ ...post, user });
             });
             resolve(mappedPosts);
+            console.log('Must unsubscribe ', posts[0].id);
           },
           reject
         );
@@ -96,6 +98,25 @@ const usePostsStore = defineStore('postsStore', {
         });
 
         await batch.commit();
+      } catch (err) {
+        console.error(err);
+      }
+    },
+    async updatePost(text, postId) {
+      try {
+        const postRef = doc(db, 'posts', postId);
+
+        await updateDoc(postRef, {
+          text,
+          edited: {
+            at: serverTimestamp(),
+            by: useAuthStore().authId,
+            moderated: false,
+          },
+        });
+        console.log('Post Updated successfully !');
+        const index = this.posts.findIndex((item) => item.id === postId);
+        this.posts[index].text = text;
       } catch (err) {
         console.error(err);
       }

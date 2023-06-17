@@ -6,7 +6,7 @@ const useAuthStore = defineStore('AuthStore', {
   state: () => {
     return {
       users: sourceData.users,
-      authId: 'jUjmgCurRRdzayqbRMO7aTG9X1G2',
+      authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3',
     };
   },
   getters: {
