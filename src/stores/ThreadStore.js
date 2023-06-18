@@ -15,54 +15,56 @@ const useThreadStore = defineStore('threadStore', {
   state: () => {
     return {
       threads: reactive([]),
+      thread: reactive({}),
+      userByThread: reactive({}),
     };
   },
   getters: {
-    thread: () => (threadId) => {
+    getThread: (state) => async (threadId) => {
       return new Promise((resolve, reject) => {
-        onSnapshot(
-          doc(db, 'threads', threadId),
-          (doc) => {
+        const unsubscribe = onSnapshot(doc(db, 'threads', threadId), (doc) => {
+          try {
             const thread = { ...doc.data(), id: doc.id };
+            state.thread = thread;
             resolve(thread);
-          },
-          reject
-        );
+          } catch (err) {
+            console.log(err);
+            reject();
+          }
+        });
       });
     },
-    getUserByThread: () => (userId) => {
+    getUserByThread: (state) => async (userId) => {
       return new Promise((resolve, reject) => {
-        onSnapshot(
-          doc(db, 'users', userId),
-          (doc) => {
-            const user = { ...doc.data(), id: doc.id };
+        const unsubscribe = onSnapshot(doc(db, 'users', userId), (doc) => {
+          try {
+            const user = reactive({ ...doc.data(), id: doc.id });
+            state.userByThread = user;
             resolve(user);
-          },
-          reject
-        );
+          } catch (err) {
+            console.log(err);
+            reject();
+          }
+        });
       });
-    },
-    countThreadPosts: (state) => async (threadId) => {
-      const thread = await state.thread(threadId);
-      return thread.posts?.length || 0;
-    },
-    countThreadContributors: (state) => async (threadId) => {
-      const thread = await state.thread(threadId);
-      return thread.contributors?.length || 0;
     },
   },
   actions: {
     async fetchThreads() {
-      onSnapshot(collection(db, 'threads'), (snapshotQuery) => {
-        try {
-          const threads = snapshotQuery.docs.map((doc) => ({
-            ...doc.data(),
-            id: doc.id,
-          }));
-          this.threads = threads;
-        } catch (error) {
-          console.error(error);
-        }
+      return new Promise((resolve, reject) => {
+        const unsubscribe = onSnapshot(collection(db, 'threads'), (snapshotQuery) => {
+          try {
+            const threads = snapshotQuery.docs.map((doc) => ({
+              ...doc.data(),
+              id: doc.id,
+            }));
+            this.threads = Array.from(threads);
+            resolve();
+          } catch (error) {
+            console.error(error);
+            reject(error);
+          }
+        });
       });
     },
     async createThread(forumId, title, userId) {

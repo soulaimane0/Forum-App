@@ -12,7 +12,7 @@ const useCategoryStore = defineStore('categoryStore', {
   getters: {
     getCategory: () => (categoryId) => {
       return new Promise((resolve, reject) => {
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           doc(db, 'categories', categoryId),
           (doc) => {
             const category = { ...doc.data(), id: doc.id };
@@ -26,7 +26,7 @@ const useCategoryStore = defineStore('categoryStore', {
       return new Promise((resolve, reject) => {
         const forumRef = collection(db, 'forums');
         const q = query(forumRef, where('categoryId', '==', categoryId));
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           q,
           (snapshotQuery) => {
             try {
@@ -46,27 +46,30 @@ const useCategoryStore = defineStore('categoryStore', {
   },
   actions: {
     fetchCategories() {
-      onSnapshot(collection(db, 'categories'), async (snapshotQuery) => {
-        try {
-          const mappedCategories = reactive([]);
-          for (const categoryDoc of snapshotQuery.docs) {
-            const category = { ...categoryDoc.data(), id: categoryDoc.id };
-            const fullForums = reactive([]);
-            for (const forumId of category.forums) {
-              const forumDoc = await getDoc(doc(db, 'forums', forumId));
-              if (forumDoc.exists()) {
-                const forum = { ...forumDoc.data(), id: forumDoc.id };
-                fullForums.push(forum);
+      const unsubscribe = onSnapshot(
+        collection(db, 'categories'),
+        async (snapshotQuery) => {
+          try {
+            const mappedCategories = reactive([]);
+            for (const categoryDoc of snapshotQuery.docs) {
+              const category = { ...categoryDoc.data(), id: categoryDoc.id };
+              const fullForums = reactive([]);
+              for (const forumId of category.forums) {
+                const forumDoc = await getDoc(doc(db, 'forums', forumId));
+                if (forumDoc.exists()) {
+                  const forum = { ...forumDoc.data(), id: forumDoc.id };
+                  fullForums.push(forum);
+                }
               }
+              category.fullForums = fullForums;
+              mappedCategories.push(category);
             }
-            category.fullForums = fullForums;
-            mappedCategories.push(category);
+            this.categories = mappedCategories;
+          } catch (error) {
+            console.error('While getting categories : ', error);
           }
-          this.categories = mappedCategories;
-        } catch (error) {
-          console.error('While getting categories : ', error);
         }
-      });
+      );
     },
   },
 });

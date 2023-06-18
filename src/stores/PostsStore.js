@@ -20,12 +20,13 @@ const usePostsStore = defineStore('postsStore', {
   state: () => {
     return {
       posts: reactive([]),
+      postsByThread: reactive([]),
     };
   },
   getters: {
     getUserByPost: () => (userId) => {
       return new Promise((resolve, reject) => {
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           doc(db, 'users', userId),
           (doc) => {
             const user = { ...doc.data(), id: doc.id };
@@ -35,34 +36,29 @@ const usePostsStore = defineStore('postsStore', {
         );
       });
     },
-    getPostsByThread: () => (threadId) => {
+    getPostsByThread: (state) => async (threadId) => {
       return new Promise((resolve, reject) => {
         const postRef = collection(db, 'posts');
         const q = query(postRef, where('threadId', '==', threadId));
-        onSnapshot(
-          q,
-          (snapshotQuery) => {
-            const mappedPosts = reactive([]);
+        const unsubscribe = onSnapshot(q, (snapshotQuery) => {
+          try {
             const posts = snapshotQuery.docs.map((doc) => ({
               ...doc.data(),
               id: doc.id,
             }));
-            posts.forEach(async (post) => {
-              const userDoc = await getDoc(doc(db, 'users', post.userId));
-              const user = { ...userDoc.data(), id: userDoc.id };
-              mappedPosts.push({ ...post, user });
-            });
-            resolve(mappedPosts);
-            console.log('Must unsubscribe ', posts[0].id);
-          },
-          reject
-        );
+            state.postsByThread = Array.from(posts);
+            resolve(posts);
+          } catch (err) {
+            console.log(err);
+            reject();
+          }
+        });
       });
     },
   },
   actions: {
     fetchPosts() {
-      onSnapshot(collection(db, 'posts'), (snapshotQuery) => {
+      const unsubscribe = onSnapshot(collection(db, 'posts'), (snapshotQuery) => {
         try {
           const posts = snapshotQuery.docs.map((doc) => ({
             ...doc.data(),

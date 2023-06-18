@@ -12,7 +12,7 @@ const useUserStore = defineStore('userStore', {
   getters: {
     getUser: () => (userId) => {
       return new Promise((resolve, reject) => {
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           doc(db, 'users', userId),
           (doc) => {
             const user = { ...doc.data(), id: doc.id };
@@ -26,7 +26,7 @@ const useUserStore = defineStore('userStore', {
       return new Promise((resolve, reject) => {
         const postsRef = collection(db, 'posts');
         const q = query(postsRef, where('userId', '==', userId));
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           q,
           (snapshotQuery) => {
             try {
@@ -47,7 +47,7 @@ const useUserStore = defineStore('userStore', {
       return new Promise((resolve, reject) => {
         const threadsRef = collection(db, 'threads');
         const q = query(threadsRef, where('userId', '==', userId));
-        onSnapshot(
+        const unsubscribe = onSnapshot(
           q,
           (snapshotQuery) => {
             try {
@@ -71,7 +71,7 @@ const useUserStore = defineStore('userStore', {
   },
   actions: {
     fetchUsers() {
-      onSnapshot(collection(db, 'users'), (snapshotQuery) => {
+      const unsubscribe = onSnapshot(collection(db, 'users'), (snapshotQuery) => {
         try {
           const docs = snapshotQuery.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
           this.users = docs;

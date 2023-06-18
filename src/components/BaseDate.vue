@@ -9,7 +9,6 @@ dayjs.extend(localizedFormat);
 const props = defineProps({
   timestamp: {
     type: [Number, Object],
-    required: true,
   },
 });
 

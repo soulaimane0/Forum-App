@@ -4,7 +4,6 @@ import useAuthStore from '@/stores/AuthenticatedStore';
 import { ref } from 'vue';
 
 const props = defineProps(['posts']);
-const emit = defineEmits(['getPosts']);
 const postsStore = usePostsStore();
 const authStore = useAuthStore();
 
@@ -15,7 +14,6 @@ const handleEdit = (id) => {
 
 const updatePost = async (post) => {
   await postsStore.updatePost(post.text, post.id);
-  emit('getPosts');
   editing.value = null;
 };
 </script>
