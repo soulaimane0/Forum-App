@@ -9,6 +9,7 @@ import Profile from '@/pages/Profile.vue';
 import ThreadCreate from '@/pages/ThreadCreate.vue';
 import ThreadUpdate from '@/pages/ThreadUpdate.vue';
 import NotFound from '@/pages/NotFound.vue';
+import useUnsubscribeStore from '@/stores/UnsubscribeStore';
 
 const routes = [
   {
@@ -117,6 +118,10 @@ const router = createRouter({
     if (to.meta.smoothScroll) scroll.behavior = 'smooth';
     return scroll;
   },
+});
+
+router.beforeEach(async () => {
+  await useUnsubscribeStore().unsubscribeAllSnapshots();
 });
 
 export default router;
