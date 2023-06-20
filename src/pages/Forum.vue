@@ -1,27 +1,44 @@
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import useForumStore from '@/stores/ForumStore';
+import { storeToRefs } from 'pinia';
+import useAsyncDataStatus from '@/composables/asyncDataStatus';
 
 const forumStore = useForumStore();
 const route = useRoute();
 const forumId = ref(route.params.id);
 
-const forums = ref(null);
-const threads = ref(null);
-onMounted(async () => {
-  forums.value = await forumStore.getForum(forumId.value);
-  threads.value = await forumStore.getThreadsByForum(forumId.value);
+const { forum, threads } = storeToRefs(forumStore);
+const asyncDataStatus = useAsyncDataStatus();
+
+const forumData = reactive({
+  forum: {},
+  threads: [],
 });
+onMounted(async () => {
+  await forumStore.getForum(forumId.value);
+  await forumStore.getThreadsByForum(forumId.value);
+  forumData.forum = forum.value;
+  forumData.threads = threads.value;
+  asyncDataStatus.asyncData_fetched();
+});
+
+watch(
+  () => [...threads.value],
+  () => {
+    forumData.threads = threads.value;
+  }
+);
 </script>
 
 <template>
-  <div v-if="forums && threads" class="row">
+  <div v-if="asyncDataStatus.isDataReady.value" class="row">
     <div class="col-12">
       <div class="d-flex justify-content-between">
         <div>
-          <h1>{{ forums?.name }}</h1>
-          <p>{{ forums?.description }}</p>
+          <h1>{{ forumData.forum?.name }}</h1>
+          <p>{{ forumData.forum?.description }}</p>
         </div>
         <div class="d-grid align-items-center">
           <RouterLink :to="{ name: 'thread-create', params: { forumId: forumId } }">
@@ -29,11 +46,8 @@ onMounted(async () => {
           </RouterLink>
         </div>
       </div>
-      <ThreadList :threads="threads" />
+      <ThreadList :threads="forumData.threads" />
     </div>
-  </div>
-  <div v-else class="row d-flex align-items-center" style="min-height: 50vh">
-    <em class="text-center fw-semibold fs-1">Loading...</em>
   </div>
 </template>
 

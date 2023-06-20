@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, reactive, ref, watch } from 'vue';
+import { onMounted, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { storeToRefs } from 'pinia';
+import useAsyncDataStatus from '@/composables/asyncDataStatus';
 
 const props = defineProps(['forumId']);
 const route = useRoute();
@@ -13,6 +14,7 @@ const threadId = ref(route.params.id);
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
 const authStore = useAuthStore();
+const asyncDataStatus = useAsyncDataStatus();
 
 const { getPostsByThread, postsByThread } = storeToRefs(postsStore);
 const { getThread, getUserByThread, thread, userByThread } = storeToRefs(threadStore);
@@ -39,6 +41,7 @@ onMounted(async () => {
 
     postsNum.value = data.thread.posts?.length || 0;
     contributorsNum.value = data.thread.contributors?.length || 0;
+    asyncDataStatus.asyncData_fetched();
   } catch (error) {
     console.error('Error while fetching data :', error);
   }
@@ -48,16 +51,14 @@ const addPost = async (post) => {
   postsStore.createPost(post.text, threadId.value, authStore.authId);
 };
 
-watch(
-  () => ({ ...postsByThread.value }),
-  () => {
-    data.posts = { ...postsByThread.value };
-  }
-);
+watch([() => ({ ...postsByThread.value }), () => ({ ...thread.value })], () => {
+  data.posts = { ...postsByThread.value };
+  data.thread = thread.value;
+});
 </script>
 
 <template>
-  <div v-if="data">
+  <div v-if="asyncDataStatus.isDataReady.value">
     <div class="d-flex justify-content-between">
       <h1 class="mb-3">{{ data.thread?.title }}</h1>
       <div class="d-grid align-items-center">
@@ -80,9 +81,5 @@ watch(
     <PostEditor class="mb-4" @save-post="addPost" />
 
     <PostsList v-if="data.posts" :posts="data.posts" />
-  </div>
-
-  <div v-else>
-    <em>Loading...</em>
   </div>
 </template>

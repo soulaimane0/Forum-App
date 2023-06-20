@@ -1,3 +1,8 @@
+<script setup>
+const emits = defineEmits(['ready']);
+emits('ready');
+</script>
+
 <template>
   <div class="text-center">
     <h1 class="fs-1">ERROR 404 !!</h1>
@@ -7,5 +12,3 @@
     </RouterLink>
   </div>
 </template>
-
-<style lang="scss" scoped></style>

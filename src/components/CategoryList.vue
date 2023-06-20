@@ -11,7 +11,7 @@ const toForumPage = (forumId) => {
 
 <template>
   <div class="row">
-    <div class="col-12">
+    <div class="col-12" v-if="categories.length">
       <table
         v-for="category in categories"
         :key="category.id"
@@ -25,7 +25,7 @@ const toForumPage = (forumId) => {
                 class="text-light text-decoration-none"
                 :to="{ name: 'category', params: { id: category.id } }"
               >
-                {{ category?.name }} -->
+                {{ category?.name }}
               </RouterLink>
             </th>
           </tr>
@@ -64,6 +64,7 @@ const toForumPage = (forumId) => {
         </tbody>
       </table>
     </div>
+    <BaseSpinner v-else />
   </div>
 </template>
 
