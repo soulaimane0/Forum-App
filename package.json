@@ -17,6 +17,7 @@
     "bootstrap": "^5.2.3",
     "dayjs": "^1.11.7",
     "firebase": "^9.18.0",
+    "nprogress": "^0.2.0",
     "pinia": "^2.0.33",
     "unplugin-vue-components": "^0.24.1",
     "vue": "^3.2.45",
