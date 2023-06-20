@@ -10,6 +10,7 @@ import {
   serverTimestamp,
   arrayUnion,
 } from 'firebase/firestore';
+import { appendUnsubscribe } from '@/helpers';
 
 const useThreadStore = defineStore('threadStore', {
   state: () => {
@@ -32,6 +33,7 @@ const useThreadStore = defineStore('threadStore', {
             reject();
           }
         });
+        appendUnsubscribe(unsubscribe);
       });
     },
     getUserByThread: (state) => async (userId) => {
@@ -46,6 +48,7 @@ const useThreadStore = defineStore('threadStore', {
             reject();
           }
         });
+        appendUnsubscribe(unsubscribe);
       });
     },
   },
@@ -65,6 +68,7 @@ const useThreadStore = defineStore('threadStore', {
             reject(error);
           }
         });
+        appendUnsubscribe(unsubscribe);
       });
     },
     async createThread(forumId, title, userId) {

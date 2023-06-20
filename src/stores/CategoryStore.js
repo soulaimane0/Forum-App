@@ -2,6 +2,7 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import { db } from '@/helpers/firestore.js';
 import { collection, onSnapshot, doc, query, where, getDoc } from 'firebase/firestore';
 import { reactive } from 'vue';
+import { appendUnsubscribe } from '@/helpers';
 
 const useCategoryStore = defineStore('categoryStore', {
   state: () => {
@@ -20,6 +21,7 @@ const useCategoryStore = defineStore('categoryStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
     getFormsByCategory: () => (categoryId) => {
@@ -41,6 +43,7 @@ const useCategoryStore = defineStore('categoryStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
   },
@@ -70,6 +73,7 @@ const useCategoryStore = defineStore('categoryStore', {
           }
         }
       );
+      appendUnsubscribe(unsubscribe);
     },
   },
 });

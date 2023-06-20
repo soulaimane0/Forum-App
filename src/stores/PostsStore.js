@@ -15,6 +15,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import useAuthStore from '@/stores/AuthenticatedStore';
+import { appendUnsubscribe } from '@/helpers';
 
 const usePostsStore = defineStore('postsStore', {
   state: () => {
@@ -34,6 +35,7 @@ const usePostsStore = defineStore('postsStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
     getPostsByThread: (state) => async (threadId) => {
@@ -53,6 +55,7 @@ const usePostsStore = defineStore('postsStore', {
             reject();
           }
         });
+        appendUnsubscribe(unsubscribe);
       });
     },
   },
@@ -69,6 +72,7 @@ const usePostsStore = defineStore('postsStore', {
           console.error('While getting posts : ', error);
         }
       });
+      appendUnsubscribe(unsubscribe);
     },
     async createPost(text, threadId, userId) {
       try {

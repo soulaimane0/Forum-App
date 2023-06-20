@@ -4,6 +4,7 @@ import { db } from '@/helpers/firestore.js';
 import { collection, doc, onSnapshot, query, updateDoc, where } from 'firebase/firestore';
 import usePostsStore from '@/stores/PostsStore';
 import useThreadStore from '@/stores/ThreadStore';
+import { appendUnsubscribe } from '@/helpers';
 
 const useUserStore = defineStore('userStore', {
   state: () => {
@@ -20,6 +21,7 @@ const useUserStore = defineStore('userStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
     getPostsByUser: () => (userId) => {
@@ -41,6 +43,7 @@ const useUserStore = defineStore('userStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
     getThreadByUser: () => (userId) => {
@@ -62,6 +65,7 @@ const useUserStore = defineStore('userStore', {
           },
           reject
         );
+        appendUnsubscribe(unsubscribe);
       });
     },
     countUserPosts: () => (userId) =>
@@ -79,6 +83,7 @@ const useUserStore = defineStore('userStore', {
           console.error(error);
         }
       });
+      appendUnsubscribe(unsubscribe);
     },
     async updateUserDetails(userData, userId) {
       try {
