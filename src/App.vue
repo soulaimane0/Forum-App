@@ -1,13 +1,42 @@
-<script setup></script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import NProgress from 'nprogress';
+
+const router = useRouter();
+let showPage = ref(false);
+
+NProgress.configure({
+  speed: 200,
+  showSpinner: false,
+});
+
+router.beforeEach(() => {
+  showPage.value = false;
+  NProgress.start();
+});
+
+const handlePageAppearence = () => {
+  showPage.value = true;
+  NProgress.done();
+};
+</script>
 
 <template>
   <TheNavBar />
   <div class="container pt-4">
-    <RouterView :key="$route.fullPath" />
+    <RouterView v-show="showPage" @ready="handlePageAppearence" :key="$route.fullPath" />
+    <BaseSpinner v-if="!showPage" />
   </div>
 </template>
 
 <style>
+@import 'nprogress/nprogress.css';
+
+#nprogress .bar {
+  background: #57ad8d !important;
+}
+
 body {
   background-color: #f6f8ff !important;
   min-height: 100vh;
