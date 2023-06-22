@@ -1,10 +1,10 @@
 const firebaseConfig = {
-  apiKey: 'AIzaSyAy93_bgMy5QUHF_DTBiodaSZRGG4A1mJ4',
-  authDomain: 'forum-26ac1.firebaseapp.com',
-  projectId: 'forum-26ac1',
-  storageBucket: 'forum-26ac1.appspot.com',
-  messagingSenderId: '31040409418',
-  appId: '1:31040409418:web:99c97ffbaa161e99533bb3',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
 export default firebaseConfig;
