@@ -2,8 +2,15 @@
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { storeToRefs } from 'pinia';
 import { handleImgError } from '@/helpers';
+import useUserStore from '@/stores/UserStore';
 
-const { authenticatedUser, authId } = storeToRefs(useAuthStore());
+const userStore = useUserStore();
+const authUserStore = useAuthStore();
+const { authenticatedUser, authId } = storeToRefs(authUserStore);
+
+const logOut = async () => {
+  await userStore.logOut();
+};
 </script>
 
 <template>
@@ -37,12 +44,12 @@ const { authenticatedUser, authId } = storeToRefs(useAuthStore());
             <a class="nav-link" href="#">Link</a>
           </li>
         </ul>
-        <ul class="d-flex align-items-center list-unstyled m-0">
+        <ul v-if="authId" class="d-flex align-items-center list-unstyled m-0">
           <li class="me-2">
             <img
               @error="handleImgError"
-              :src="authenticatedUser.avatar"
-              :alt="`${authenticatedUser.username} profile picture`"
+              :src="authenticatedUser?.avatar"
+              :alt="`${authenticatedUser?.username} profile picture`"
               class="img-fluid rounded-circle"
               width="45"
               height="45"
@@ -57,7 +64,7 @@ const { authenticatedUser, authId } = storeToRefs(useAuthStore());
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {{ authenticatedUser.username }}
+                {{ authenticatedUser?.username }}
               </a>
 
               <ul class="dropdown-menu">
@@ -72,17 +79,35 @@ const { authenticatedUser, authId } = storeToRefs(useAuthStore());
                     >View Profile</RouterLink
                   >
                 </li>
-                <li><a class="dropdown-item" href="#">Logout</a></li>
+                <li>
+                  <RouterLink @click="logOut" class="dropdown-item" :to="{ name: 'home' }"
+                    >Logout</RouterLink
+                  >
+                </li>
               </ul>
             </div>
           </li>
         </ul>
         <!-- <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Sign in</a>
+            <RouterLink
+              class="nav-link active"
+              href="#"
+              :to="{
+                name: 'register',
+              }"
+              >Sign in</RouterLink
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="#">Register</a>
+            <RouterLink
+              class="nav-link active"
+              href="#"
+              :to="{
+                name: 'register',
+              }"
+              >Sign Up</RouterLink
+            >
           </li>
         </ul> -->
       </div>

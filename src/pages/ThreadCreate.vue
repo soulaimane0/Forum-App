@@ -7,6 +7,8 @@ import useAuthStore from '@/stores/AuthenticatedStore';
 import { useRouter } from 'vue-router';
 
 const props = defineProps(['forumId']);
+const emits = defineEmits(['ready']);
+
 const router = useRouter();
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
@@ -16,6 +18,7 @@ const forum = ref(null);
 
 onMounted(async () => {
   forum.value = await useForumStore().getForum(props.forumId);
+  emits('ready');
 });
 
 const publish = async (form) => {

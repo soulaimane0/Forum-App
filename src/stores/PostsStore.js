@@ -81,7 +81,7 @@ const usePostsStore = defineStore('postsStore', {
         // Add new Post
         const postRef = doc(collection(db, 'posts'));
         const post = reactive({
-          publishedAt: Math.floor(new Date() / 1000),
+          publishedAt: serverTimestamp(),
           text,
           threadId,
           userId,

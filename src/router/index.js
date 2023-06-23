@@ -10,6 +10,8 @@ import ThreadCreate from '@/pages/ThreadCreate.vue';
 import ThreadUpdate from '@/pages/ThreadUpdate.vue';
 import NotFound from '@/pages/NotFound.vue';
 import useUnsubscribeStore from '@/stores/UnsubscribeStore';
+import Register from '@/pages/Register.vue';
+import Signin from '@/pages/Signin.vue';
 
 const routes = [
   {
@@ -106,6 +108,16 @@ const routes = [
     path: '/:pathMatch(.*)*',
     name: 'notFound',
     component: NotFound,
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: Register,
+  },
+  {
+    path: '/signin',
+    name: 'signin',
+    component: Signin,
   },
 ];
 

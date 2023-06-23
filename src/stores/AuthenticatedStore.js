@@ -1,16 +1,28 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import sourceData from '../data.json';
-import { findById } from '@/helpers';
+import { reactive } from 'vue';
+import { auth } from '@/helpers/firestore.js';
+import useUserStore from '@/stores/UserStore';
 
 const useAuthStore = defineStore('AuthStore', {
   state: () => {
     return {
-      users: sourceData.users,
-      authId: 'VXjpr2WHa8Ux4Bnggym8QFLdv5C3',
+      authenticatedUser: reactive({}),
+      authId: '',
     };
   },
-  getters: {
-    authenticatedUser: (state) => findById(state.users, state.authId),
+  getters: {},
+  actions: {
+    async getAuthenticatedUser() {
+      console.log('auth store started...');
+      const user = auth.currentUser;
+      if (user) {
+        const userId = user.uid;
+        this.authenticatedUser = await useUserStore().getUser(userId);
+        this.authId = userId;
+      } else {
+        console.log('User is signed out!');
+      }
+    },
   },
 });
 if (import.meta.hot) {
