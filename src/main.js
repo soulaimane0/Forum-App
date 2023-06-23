@@ -2,6 +2,9 @@ import { createApp } from 'vue';
 import App from './App.vue';
 import router from '@/router';
 import { createPinia } from 'pinia';
+import useAuthStore from '@/stores/AuthenticatedStore';
+import { auth } from '@/helpers/firestore.js';
+import { onAuthStateChanged } from 'firebase/auth';
 
 // Bootstrap links
 import 'bootstrap/dist/css/bootstrap.css';
@@ -15,6 +18,16 @@ import FontAwesome from '@/plugins/FontAwesome';
 
 const forumApp = createApp(App);
 const pinia = createPinia();
+
+onAuthStateChanged(auth, async (user) => {
+  try {
+    if (user) {
+      await useAuthStore().getAuthenticatedUser();
+    }
+  } catch (err) {
+    console.error(err);
+  }
+});
 
 forumApp.use(router);
 forumApp.use(pinia);
