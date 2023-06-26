@@ -54,6 +54,8 @@ const addPost = async (post) => {
 watch([() => ({ ...postsByThread.value }), () => ({ ...thread.value })], () => {
   data.posts = { ...postsByThread.value };
   data.thread = thread.value;
+  postsNum.value = data.thread.posts?.length || 0;
+  contributorsNum.value = data.thread.contributors?.length || 0;
 });
 </script>
 

@@ -13,7 +13,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h5>{{ user?.username }}</h5>
+  <h5>
+    {{
+      user?.username.length >= 12
+        ? user?.username.substring(0, 12) + '..'
+        : user?.username
+    }}
+  </h5>
   <img
     @error="handleImgError"
     :src="user?.avatar"

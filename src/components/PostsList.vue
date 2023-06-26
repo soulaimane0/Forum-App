@@ -47,7 +47,7 @@ const updatePost = async (post) => {
           </div>
           <div class="align-self-end text-end">
             <div class="text-muted" v-if="post.edited?.at"><small>edited</small></div>
-            <BaseDate :timestamp="parseInt(post.publishedAt)" />
+            <BaseDate :timestamp="post.publishedAt" />
           </div>
         </div>
       </div>

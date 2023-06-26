@@ -38,7 +38,7 @@ const logOut = async () => {
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <RouterLink class="nav-link active" :to="{ name: 'home' }">Home</RouterLink>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">Link</a>
@@ -64,7 +64,11 @@ const logOut = async () => {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                {{ authenticatedUser?.username }}
+                {{
+                  authenticatedUser?.username.length >= 12
+                    ? authenticatedUser?.username.substring(0, 12) + '..'
+                    : authenticatedUser?.username
+                }}
               </a>
 
               <ul class="dropdown-menu">
@@ -88,28 +92,28 @@ const logOut = async () => {
             </div>
           </li>
         </ul>
-        <!-- <ul class="navbar-nav">
+        <ul v-else class="navbar-nav">
           <li class="nav-item">
             <RouterLink
-              class="nav-link active"
+              class="nav-link"
               href="#"
               :to="{
-                name: 'register',
+                name: 'signin',
               }"
               >Sign in</RouterLink
             >
           </li>
           <li class="nav-item">
             <RouterLink
-              class="nav-link active"
+              class="nav-link"
               href="#"
               :to="{
                 name: 'register',
               }"
-              >Sign Up</RouterLink
+              >Register</RouterLink
             >
           </li>
-        </ul> -->
+        </ul>
       </div>
     </div>
   </nav>
