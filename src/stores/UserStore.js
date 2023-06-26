@@ -16,6 +16,9 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+  getAdditionalUserInfo,
 } from 'firebase/auth';
 import usePostsStore from '@/stores/PostsStore';
 import useThreadStore from '@/stores/ThreadStore';
@@ -166,10 +169,36 @@ const useUserStore = defineStore('userStore', {
     },
     async signInWithEmailAndPassword(email, password) {
       try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
         console.log('User logged in successfully!');
+        await useAuthStore().getAuthenticatedUser();
+        return userCredential;
       } catch (err) {
         throw new Error(err);
+      }
+    },
+    async signInWithGoogle() {
+      try {
+        const provider = new GoogleAuthProvider();
+        const response = await signInWithPopup(auth, provider);
+        const user = response.user;
+        const { isNewUser } = getAdditionalUserInfo(response);
+
+        if (isNewUser) {
+          await this.createUser(
+            user.uid,
+            user.displayName,
+            user.email,
+            user.email,
+            user.photoURL
+          );
+          console.log('Registered with Google Provider successfully!');
+        } else {
+          await useAuthStore().getAuthenticatedUser();
+          console.log('Signed in with Google Provider successfully!');
+        }
+      } catch (error) {
+        throw new Error(error);
       }
     },
   },

@@ -25,6 +25,10 @@ const signIn = async () => {
     console.error(err);
   }
 };
+const signInWithGoogle = async () => {
+  await userStore.signInWithGoogle();
+  router.push({ name: 'home' });
+};
 </script>
 
 <template>
@@ -64,7 +68,7 @@ const signIn = async () => {
     </div>
     <div class="row mt-10">
       <div class="col col-md-6 col-md-8 col-xl-6 mx-auto text-center">
-        <button class="btn btn-danger btn-sm">
+        <button @click="signInWithGoogle" class="btn btn-danger btn-sm">
           <fa icon="fab fa-google" /> Sign in with google
         </button>
       </div>
