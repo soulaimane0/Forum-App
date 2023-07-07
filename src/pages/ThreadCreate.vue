@@ -4,7 +4,7 @@ import useForumStore from '@/stores/ForumStore';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRouter } from 'vue-router';
 
 const props = defineProps(['forumId']);
 const emits = defineEmits(['ready']);
@@ -13,6 +13,7 @@ const router = useRouter();
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
 const authStore = useAuthStore();
+let formIsDirty = ref(false);
 
 const forum = ref(null);
 
@@ -30,6 +31,13 @@ const publish = async (form) => {
   await postsStore.createPost(form.content, thread, authStore.authId);
   router.push({ name: 'thread', params: { id: thread } });
 };
+
+onBeforeRouteLeave(() => {
+  if (formIsDirty.value) {
+    const confirmed = confirm('Do you really want to leave? you have unsaved changes!');
+    if (!confirmed) return false;
+  }
+});
 </script>
 
 <template>
@@ -39,6 +47,8 @@ const publish = async (form) => {
   <ThreadEditor
     @save-thread="publish"
     @cancel-thread="router.push({ name: 'forum', params: { id: forumId } })"
+    @dirty="formIsDirty = true"
+    @clean="formIsDirty = false"
   />
 </template>
 

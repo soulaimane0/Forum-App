@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, reactive, ref, watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
@@ -26,6 +26,7 @@ const data = reactive({
 });
 const postsNum = ref(0);
 const contributorsNum = ref(0);
+let isTextAreaDirty = ref(false);
 
 onMounted(async () => {
   try {
@@ -57,6 +58,13 @@ watch([() => ({ ...postsByThread.value }), () => ({ ...thread.value })], () => {
   postsNum.value = data.thread.posts?.length || 0;
   contributorsNum.value = data.thread.contributors?.length || 0;
 });
+
+onBeforeRouteLeave(() => {
+  if (isTextAreaDirty.value) {
+    const confirmed = confirm('Do you really want to leave? you have unsaved changes!');
+    if (!confirmed) return false;
+  }
+});
 </script>
 
 <template>
@@ -80,7 +88,12 @@ watch([() => ({ ...postsByThread.value }), () => ({ ...thread.value })], () => {
       />
     </div>
 
-    <PostEditor class="mb-4" @save-post="addPost" />
+    <PostEditor
+      class="mb-4"
+      @save-post="addPost"
+      @dirty="isTextAreaDirty = true"
+      @clean="isTextAreaDirty = false"
+    />
 
     <PostsList v-if="data.posts" :posts="data.posts" />
   </div>

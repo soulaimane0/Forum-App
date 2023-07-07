@@ -1,7 +1,7 @@
 <script setup>
-import { reactive, computed } from 'vue';
+import { reactive, computed, watch } from 'vue';
 
-const emits = defineEmits(['save-thread']);
+const emits = defineEmits(['save-thread', 'dirty', 'clean']);
 const props = defineProps({
   title: {
     type: String,
@@ -20,8 +20,23 @@ const form = reactive({
 const existing = computed(() => !!props.title);
 
 const save = () => {
+  emits('clean');
   emits('save-thread', { ...form });
 };
+
+watch(
+  () => {
+    ({ ...form });
+  },
+  () => {
+    if (form.title !== props.title || form.content !== props.text) {
+      emits('dirty');
+    } else {
+      emits('clean');
+    }
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <template>
@@ -42,7 +57,9 @@ const save = () => {
       ></textarea>
     </div>
     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
-      <button class="btn btn-secondary" @click="$emit('cancel-thread')">Cancel</button>
+      <button type="button" class="btn btn-secondary" @click="$emit('cancel-thread')">
+        Cancel
+      </button>
       <button type="submit" class="btn btn-primary" @submit.prevent="save">
         {{ existing ? 'Update' : 'Publish' }}
       </button>

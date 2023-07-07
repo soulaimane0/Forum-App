@@ -1,9 +1,9 @@
 <script setup>
-import { reactive, ref } from 'vue';
+import { reactive, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import usePostsStore from '@/stores/PostsStore';
 
-const emit = defineEmits(['save-post']);
+const emits = defineEmits(['save-post', 'dirty', 'clean']);
 const props = defineProps({
   post: {
     type: Object,
@@ -14,12 +14,27 @@ const props = defineProps({
 const postCopy = reactive({ ...props.post });
 const savePost = () => {
   if (postCopy.text) {
-    emit('save-post', postCopy);
+    emits('save-post', postCopy);
     postCopy.text = null;
   } else {
     alert('Please write some text in the post input field !');
   }
 };
+
+watch(
+  () => ({ ...postCopy }),
+  () => {
+    if (postCopy.text !== props.post.text) {
+      emits('dirty');
+    } else {
+      emits('clean');
+    }
+  },
+  {
+    deep: true,
+    immediate: true,
+  }
+);
 </script>
 
 <template>

@@ -3,7 +3,7 @@ import useUserStore from '@/stores/UserStore';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 defineProps({
   edit: {
@@ -12,6 +12,7 @@ defineProps({
   },
 });
 const route = useRoute();
+const emits = defineEmits(['ready']);
 const userId = ref(route.params.id);
 const userStore = useUserStore();
 const threadStore = useThreadStore();
@@ -31,6 +32,7 @@ onMounted(async () => {
   user.value = await userStore.getUser(userId.value);
   posts.value = await userStore.getPostsByUser(userId.value);
   threads.value = await userStore.getThreadByUser(userId.value);
+  emits('ready');
 });
 </script>
 

@@ -4,7 +4,7 @@ import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
 import useAsyncDataStatus from '@/composables/asyncDataStatus';
 
-import { useRouter, useRoute } from 'vue-router';
+import { useRouter, useRoute, onBeforeRouteLeave } from 'vue-router';
 
 const router = useRouter();
 const route = useRoute();
@@ -12,6 +12,7 @@ const threadId = ref(route.params.id);
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
 const asyncDataStatus = useAsyncDataStatus();
+let formIsDirty = ref(false);
 
 const threadData = reactive({
   thread: {},
@@ -28,6 +29,13 @@ const update = async (form) => {
   await threadStore.updateThread(form.title, threadId.value);
   router.push({ name: 'thread', params: { id: threadId.value } });
 };
+
+onBeforeRouteLeave(() => {
+  if (formIsDirty.value) {
+    const confirmed = confirm('Do you really want to leave? you have unsaved changes!');
+    if (!confirmed) return false;
+  }
+});
 </script>
 
 <template>
@@ -40,6 +48,8 @@ const update = async (form) => {
       :text="threadData.posts[0]?.text"
       @save-thread="update"
       @cancel-thread="router.push({ name: 'thread', params: { id: threadId } })"
+      @dirty="formIsDirty = true"
+      @clean="formIsDirty = false"
     />
   </div>
 </template>
