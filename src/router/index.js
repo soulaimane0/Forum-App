@@ -10,6 +10,7 @@ import ThreadCreate from '@/pages/ThreadCreate.vue';
 import ThreadUpdate from '@/pages/ThreadUpdate.vue';
 import NotFound from '@/pages/NotFound.vue';
 import useUnsubscribeStore from '@/stores/UnsubscribeStore';
+import useAuthStore from '@/stores/AuthenticatedStore';
 import Register from '@/pages/Register.vue';
 import Signin from '@/pages/Signin.vue';
 
@@ -85,6 +86,12 @@ const routes = [
     name: 'profile',
     component: Profile,
     meta: { toTop: true, smoothScroll: true },
+    beforeEnter: (to, from) => {
+      const authId = useAuthStore().authId;
+      if (!authId) {
+        return { name: 'home' };
+      }
+    },
   },
   {
     path: '/profile/:id/edit',
