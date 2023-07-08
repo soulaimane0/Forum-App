@@ -2,12 +2,14 @@ import { defineStore, acceptHMRUpdate } from 'pinia';
 import { reactive } from 'vue';
 import { auth } from '@/helpers/firestore.js';
 import useUserStore from '@/stores/UserStore';
+import { onAuthStateChanged } from 'firebase/auth';
 
 const useAuthStore = defineStore('AuthStore', {
   state: () => {
     return {
       authenticatedUser: reactive({}),
       authId: '',
+      authObserverUnsubscribe: null,
     };
   },
   getters: {},
@@ -22,6 +24,25 @@ const useAuthStore = defineStore('AuthStore', {
       } else {
         console.log('User is signed out!');
       }
+    },
+    async initAuthentication() {
+      if (this.authObserverUnsubscribe) this.authObserverUnsubscribe();
+      return new Promise((resolve) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+          try {
+            console.log('the user has changed!');
+            if (user) {
+              await this.getAuthenticatedUser();
+              resolve(user);
+            } else {
+              resolve(null);
+            }
+          } catch (err) {
+            console.error(err);
+          }
+        });
+        this.authObserverUnsubscribe = unsubscribe;
+      });
     },
   },
 });

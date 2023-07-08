@@ -51,7 +51,7 @@ const routes = [
       //chack if the forum id exists
       const forumDoc = doc(db, 'forums', to.params.id);
       const forum = await getDoc(forumDoc);
-      if (forum) return next();
+      if (forum.data()) return next();
       else {
         return next({
           name: 'notFound',
@@ -70,7 +70,7 @@ const routes = [
       //chack if the thread id exists
       const threadDoc = doc(db, 'threads', to.params.id);
       const thread = await getDoc(threadDoc);
-      if (thread) return next();
+      if (thread.data()) return next();
       else {
         next({
           name: 'notFound',
@@ -85,13 +85,7 @@ const routes = [
     path: '/profile/:id',
     name: 'profile',
     component: Profile,
-    meta: { toTop: true, smoothScroll: true },
-    beforeEnter: (to, from) => {
-      const authId = useAuthStore().authId;
-      if (!authId) {
-        return { name: 'home' };
-      }
-    },
+    meta: { toTop: true, smoothScroll: true, requiresAuth: true },
   },
   {
     path: '/profile/:id/edit',
@@ -139,8 +133,15 @@ const router = createRouter({
   },
 });
 
-router.beforeEach(async () => {
+router.beforeEach(async (to, from) => {
+  const authStore = useAuthStore();
+
+  await authStore.initAuthentication();
   await useUnsubscribeStore().unsubscribeAllSnapshots();
+
+  if (to.meta.requiresAuth && !authStore.authId) {
+    return { name: 'home' };
+  }
 });
 
 export default router;

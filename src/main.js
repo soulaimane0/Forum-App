@@ -19,16 +19,6 @@ import FontAwesome from '@/plugins/FontAwesome';
 const forumApp = createApp(App);
 const pinia = createPinia();
 
-onAuthStateChanged(auth, async (user) => {
-  try {
-    if (user) {
-      await useAuthStore().getAuthenticatedUser();
-    }
-  } catch (err) {
-    console.error(err);
-  }
-});
-
 forumApp.use(router);
 forumApp.use(pinia);
 forumApp.use(BootstrapPlugin);
