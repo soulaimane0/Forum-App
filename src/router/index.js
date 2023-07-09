@@ -92,18 +92,21 @@ const routes = [
     name: 'profileEdit',
     component: Profile,
     props: { edit: true },
+    meta: { requiresAuth: true },
   },
   {
     path: '/forum/:forumId/thread/create',
     name: 'thread-create',
     component: ThreadCreate,
     props: true,
+    meta: { requiresAuth: true },
   },
   {
     path: '/thread/:id/update',
     name: 'thread-update',
     component: ThreadUpdate,
     props: true,
+    meta: { requiresAuth: true },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -114,11 +117,13 @@ const routes = [
     path: '/register',
     name: 'register',
     component: Register,
+    meta: { requiresGuest: true },
   },
   {
     path: '/signin',
     name: 'signin',
     component: Signin,
+    meta: { requiresGuest: true },
   },
 ];
 
@@ -140,6 +145,9 @@ router.beforeEach(async (to, from) => {
   await useUnsubscribeStore().unsubscribeAllSnapshots();
 
   if (to.meta.requiresAuth && !authStore.authId) {
+    return { name: 'signin' };
+  }
+  if (to.meta.requiresGuest && authStore.authId) {
     return { name: 'home' };
   }
 });
