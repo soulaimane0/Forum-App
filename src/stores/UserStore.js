@@ -110,9 +110,12 @@ const useUserStore = defineStore('userStore', {
         const userRef = doc(db, 'users', userId);
 
         await updateDoc(userRef, {
-          email: userData.email,
-          name: userData.name,
           username: userData.username,
+          name: userData.name,
+          bio: userData.bio || null,
+          email: userData.email,
+          website: userData.website || null,
+          location: userData.location || null,
         });
         console.log('User Updated Successfilly !!!');
       } catch (error) {

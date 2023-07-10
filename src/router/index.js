@@ -145,7 +145,7 @@ router.beforeEach(async (to, from) => {
   await useUnsubscribeStore().unsubscribeAllSnapshots();
 
   if (to.meta.requiresAuth && !authStore.authId) {
-    return { name: 'signin' };
+    return { name: 'signin', query: { redirectTo: to.path } };
   }
   if (to.meta.requiresGuest && authStore.authId) {
     return { name: 'home' };

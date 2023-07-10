@@ -1,10 +1,11 @@
 <script setup>
 import { reactive } from 'vue';
 import useUserStore from '@/stores/UserStore';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const emit = defineEmits(['ready']);
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 
 const form = reactive({
@@ -17,6 +18,11 @@ const form = reactive({
 
 emit('ready');
 
+const successRedirect = () => {
+  const path = route.query.redirectTo || { name: 'home' };
+  router.push(path);
+};
+
 const registerUser = async () => {
   await userStore.registerUserWithEmailAndPassword(
     form.name,
@@ -28,12 +34,12 @@ const registerUser = async () => {
   for (const prop of Object.getOwnPropertyNames(form)) {
     form[prop] = '';
   }
-  router.push({ name: 'home' });
+  successRedirect();
 };
 
 const registerWithGoogle = async () => {
   await userStore.signInWithGoogle();
-  router.push({ name: 'home' });
+  successRedirect();
 };
 </script>
 

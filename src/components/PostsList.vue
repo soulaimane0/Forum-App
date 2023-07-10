@@ -19,7 +19,7 @@ const updatePost = async (post) => {
 </script>
 
 <template>
-  <div v-for="post in posts" :key="post.id" class="card shadow border-0 mb-3 p-3">
+  <div v-for="post in posts" :key="post.id" class="card shadow-sm border-0 mb-4 p-3">
     <div class="row g-0">
       <div class="col-md-2 d-flex flex-column align-items-center">
         <PostCardUserInfo :userId="post.userId" />

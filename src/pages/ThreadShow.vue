@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
@@ -65,6 +65,8 @@ onBeforeRouteLeave(() => {
     if (!confirmed) return false;
   }
 });
+
+const userIsAuthenticated = computed(() => (authStore.authId ? true : false));
 </script>
 
 <template>
@@ -72,12 +74,15 @@ onBeforeRouteLeave(() => {
     <div class="d-flex justify-content-between">
       <h1 class="mb-3">{{ data.thread?.title }}</h1>
       <div class="d-grid align-items-center">
-        <RouterLink :to="{ name: 'thread-update', params: { id: threadId } }">
+        <RouterLink
+          v-if="data.thread.userId === authStore.authId"
+          :to="{ name: 'thread-update', params: { id: threadId } }"
+        >
           <button class="btn btn-primary fw-semibold">Update thread</button>
         </RouterLink>
       </div>
     </div>
-    <div class="d-flex justify-content-between text-secondary">
+    <div class="d-flex justify-content-between text-secondary mb-4">
       <p>
         By {{ data.user?.name }},
         <BaseDate :timestamp="data.thread?.publishedAt" />
@@ -87,14 +92,29 @@ onBeforeRouteLeave(() => {
         :contibutorsNum="contributorsNum"
       />
     </div>
+    <div></div>
+    <PostsList v-if="data.posts" :posts="data.posts" />
 
     <PostEditor
-      class="mb-4"
+      v-if="userIsAuthenticated"
+      class="mb-4 mt-8"
       @save-post="addPost"
       @dirty="isTextAreaDirty = true"
       @clean="isTextAreaDirty = false"
     />
-
-    <PostsList v-if="data.posts" :posts="data.posts" />
+    <div v-else class="text-center mb-5 fs-5 fw-semibold">
+      <RouterLink
+        class="text-decoration-none"
+        :to="{ name: 'signin', query: { redirectTo: route.path } }"
+        >Sign in</RouterLink
+      >
+      or
+      <RouterLink
+        class="text-decoration-none"
+        :to="{ name: 'register', query: { redirectTo: route.path } }"
+        >Register</RouterLink
+      >
+      to reply.
+    </div>
   </div>
 </template>

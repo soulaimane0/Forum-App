@@ -5,7 +5,7 @@ const props = defineProps(['user', 'postsCount', 'threadsCount']);
 </script>
 
 <template>
-  <div class="card border-0 shadow">
+  <div class="card border-0 shadow-sm">
     <div class="card-header text-center border-0 bg-white">
       <img
         @error="handleImgError"

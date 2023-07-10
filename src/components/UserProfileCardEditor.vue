@@ -22,7 +22,7 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="card border-0 shadow" v-if="activeUser">
+  <div class="card border-0 shadow-sm" v-if="activeUser">
     <div class="card-header text-center border-0 bg-white">
       <img
         @error="handleImgError"
@@ -67,14 +67,6 @@ const cancel = () => {
       <hr class="w-75 mx-auto" />
     </div>
     <div class="card-footer px-2 border-0 bg-white">
-      <label for="website">Website</label>
-      <input
-        id="website"
-        type="text"
-        class="form-control mb-2"
-        placeholder="website"
-        v-model="activeUser.website"
-      />
       <label for="email">Email*</label>
       <input
         id="email"
@@ -83,6 +75,15 @@ const cancel = () => {
         placeholder="Email"
         v-model="activeUser.email"
       />
+      <label for="website">Website</label>
+      <input
+        id="website"
+        type="text"
+        class="form-control mb-2"
+        placeholder="website"
+        v-model="activeUser.website"
+      />
+
       <label for="location">Location</label>
       <input
         id="location"
