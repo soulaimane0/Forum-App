@@ -10,6 +10,7 @@ export {}
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     BaseDate: typeof import('./src/components/BaseDate.vue')['default']
+    BaseNotifications: typeof import('./src/components/BaseNotifications.vue')['default']
     BaseSpinner: typeof import('./src/components/BaseSpinner.vue')['default']
     Category: typeof import('./src/components/Category.vue')['default']
     CategoryList: typeof import('./src/components/CategoryList.vue')['default']
