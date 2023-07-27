@@ -27,6 +27,7 @@ const handlePageAppearence = () => {
   <div class="container pt-4">
     <RouterView v-show="showPage" @ready="handlePageAppearence" :key="$route.fullPath" />
     <BaseSpinner v-if="!showPage" />
+    <BaseNotifications />
   </div>
 </template>
 

@@ -16,7 +16,9 @@ import {
 } from 'firebase/firestore';
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { appendUnsubscribe } from '@/helpers';
+import useNotifications from '@/composables/useNotifications';
 
+const { addNotification } = useNotifications();
 const usePostsStore = defineStore('postsStore', {
   state: () => {
     return {
@@ -87,7 +89,10 @@ const usePostsStore = defineStore('postsStore', {
           userId,
         });
         batch.set(postRef, post);
-        console.log('New post has been add successfully !');
+        addNotification({
+          message: 'New post has been add successfully!',
+          timeout: 6000,
+        });
 
         // Update thread by adding posts and contributers
         const threadRef = doc(db, 'threads', threadId);
@@ -114,7 +119,7 @@ const usePostsStore = defineStore('postsStore', {
             moderated: false,
           },
         });
-        console.log('Post Updated successfully !');
+        addNotification({ message: 'Post Updated successfully!', timeout: 6000 });
         const index = this.posts.findIndex((item) => item.id === postId);
         this.posts[index].text = text;
       } catch (err) {

@@ -11,7 +11,9 @@ import {
   arrayUnion,
 } from 'firebase/firestore';
 import { appendUnsubscribe } from '@/helpers';
+import useNotifications from '@/composables/useNotifications';
 
+const { addNotification } = useNotifications();
 const useThreadStore = defineStore('threadStore', {
   state: () => {
     return {
@@ -85,7 +87,10 @@ const useThreadStore = defineStore('threadStore', {
         });
 
         batche.set(threadRef, thread);
-        console.log('New thread has been created successfully ! ', threadRef.id);
+        addNotification({
+          message: 'New thread has been created successfully!',
+          timeout: 6000,
+        });
 
         const forumRef = doc(db, 'forums', forumId);
         const userRef = doc(db, 'users', userId);
@@ -107,7 +112,7 @@ const useThreadStore = defineStore('threadStore', {
       await updateDoc(threadRef, {
         title,
       });
-      console.log('Thread updated successfully !');
+      addNotification({ message: 'Thread updated successfully!', timeout: 6000 });
       const index = this.threads.findIndex((item) => item.id === threadId);
       this.threads[index].title = title;
     },
