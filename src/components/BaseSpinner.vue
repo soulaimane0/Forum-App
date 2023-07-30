@@ -1,3 +1,13 @@
+<script setup>
+const props = defineProps({
+  color: {
+    type: String,
+    default: '#333',
+  },
+});
+const spinnerColor = props.color;
+</script>
+
 <template>
   <div class="sk-circle">
     <div class="sk-circle1 sk-child"></div>
@@ -34,7 +44,7 @@
       margin: 0 auto;
       width: 15%;
       height: 15%;
-      background-color: #333;
+      background-color: v-bind(spinnerColor);
       border-radius: 100%;
       animation: sk-circleBounceDelay 1.2s infinite ease-in-out both;
     }
