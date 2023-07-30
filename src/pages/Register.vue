@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import useUserStore from '@/stores/UserStore';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -41,6 +41,16 @@ const registerWithGoogle = async () => {
   await userStore.signInWithGoogle();
   successRedirect();
 };
+
+let avatarPreview = ref(null);
+const handleImageUpload = (e) => {
+  form.avatar = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    avatarPreview.value = event.target.result;
+  };
+  reader.readAsDataURL(form.avatar);
+};
 </script>
 
 <template>
@@ -49,8 +59,28 @@ const registerWithGoogle = async () => {
       <div
         class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto bg-white rounded px-6 py-8 shadow"
       >
-        <h1 class="text-center fw-bold mb-4">Register</h1>
+        <h1 class="text-center fw-bold mb-6">Register</h1>
         <form @submit.prevent="registerUser">
+          <div
+            class="avatar-container text-center mx-auto"
+            style="height: 125px; width: 130px"
+          >
+            <label for="avatar" class="h-100 w-100">
+              <img
+                :src="avatarPreview || '/src/assets/images/user-img-upload.png'"
+                alt="User avatar"
+                :class="avatarPreview ? 'rounded-circle w-100 h-100' : ''"
+                style="cursor: pointer"
+              />
+            </label>
+            <input
+              type="file"
+              id="avatar"
+              accept="image/*"
+              @change="handleImageUpload"
+              hidden
+            />
+          </div>
           <div class="mb-3">
             <label class="form-label">Full Name</label>
             <input required v-model="form.name" type="text" class="form-control" />
@@ -71,10 +101,6 @@ const registerWithGoogle = async () => {
               type="password"
               class="form-control"
             />
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Avatar</label>
-            <input v-model="form.avatar" type="text" class="form-control" />
           </div>
           <div class="mt-6">
             <button type="submit" class="btn btn-primary py-2 fw-bold w-100">

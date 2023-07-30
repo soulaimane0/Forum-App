@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref, computed, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { handleImgError } from '@/helpers';
 
@@ -8,8 +8,35 @@ const emits = defineEmits(['update-user-profile']);
 const router = useRouter();
 
 const activeUser = reactive({ ...props.user });
+let uploadingImg = ref(false);
+let userPreviewImg = ref(activeUser?.avatar);
+
+const changeRandomAvatar = (event) => {
+  const randomAvatarUL = event;
+  activeUser.avatar = randomAvatarUL;
+  const reader = new FileReader();
+  reader.onload = () => {
+    userPreviewImg.value = reader.result;
+  };
+  reader.readAsDataURL(activeUser.avatar);
+  console.log(activeUser);
+};
+
+const handleImageUpload = (e) => {
+  uploadingImg.value = true;
+  activeUser.avatar = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    uploadingImg.value = false;
+    userPreviewImg.value = reader.result;
+  };
+  reader.readAsDataURL(activeUser.avatar);
+  console.log(activeUser);
+};
+
 const save = () => {
   if (activeUser.email && activeUser.name && activeUser.email) {
+    console.log('acc ', activeUser);
     emits('update-user-profile', { ...activeUser });
     router.push({ name: 'profile' });
   } else {
@@ -24,14 +51,28 @@ const cancel = () => {
 <template>
   <div class="card border-0 shadow-sm" v-if="activeUser">
     <div class="card-header text-center border-0 bg-white">
-      <img
-        @error="handleImgError"
-        :src="user?.avatar"
-        :alt="`${user?.name} profile picture`"
-        class="rounded-circle"
-        width="120"
-        height="120"
+      <label for="avatar" class="position-relative">
+        <img
+          @error="handleImgError"
+          :src="userPreviewImg || '/src/assets/images/user-img-upload.png'"
+          :alt="`${user?.name} profile picture`"
+          class="rounded-circle"
+          style="cursor: pointer"
+          width="120"
+          height="120"
+        />
+        <div v-if="uploadingImg" class="uploading-spinner position-absolute">
+          <BaseSpinner color="#fff" />
+        </div>
+      </label>
+      <input
+        type="file"
+        id="avatar"
+        accept="image/*"
+        @change="handleImageUpload"
+        hidden
       />
+      <UserProfileCardEditorRandomAvatar @hit="changeRandomAvatar" />
     </div>
     <div class="card-body pb-0">
       <label for="username">Username*</label>
@@ -94,12 +135,22 @@ const cancel = () => {
       />
 
       <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-2">
-        <button class="btn btn-secondary" @click="cancel">Cancel</button>
+        <button class="btn btn-secondary" @click.prevent="cancel">Cancel</button>
         <button class="btn btn-primary" @click="save">Save</button>
       </div>
     </div>
   </div>
   <div v-else>
-    <p>Loading...</p>
+    <base-spinner />
   </div>
 </template>
+
+<style scoped>
+.uploading-spinner {
+  top: 45px;
+  left: 40px;
+}
+.sk-circle {
+  margin: 0 !important;
+}
+</style>
