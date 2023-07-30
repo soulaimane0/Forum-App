@@ -28,5 +28,6 @@ declare module '@vue/runtime-core' {
     UserDetails: typeof import('./src/components/UserDetails.vue')['default']
     UserProfileCardDetails: typeof import('./src/components/UserProfileCardDetails.vue')['default']
     UserProfileCardEditor: typeof import('./src/components/UserProfileCardEditor.vue')['default']
+    UserProfileCardEditorRandomAvatar: typeof import('./src/components/UserProfileCardEditorRandomAvatar.vue')['default']
   }
 }
