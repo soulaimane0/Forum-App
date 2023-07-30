@@ -1,5 +1,5 @@
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import { reactive, ref } from 'vue';
+import { reactive } from 'vue';
 import { db, auth } from '@/helpers/firestore.js';
 import {
   addDoc,
@@ -20,14 +20,17 @@ import {
   signInWithPopup,
   getAdditionalUserInfo,
 } from 'firebase/auth';
+import { getDownloadURL, getStorage, uploadBytes, ref } from 'firebase/storage';
 import usePostsStore from '@/stores/PostsStore';
 import useThreadStore from '@/stores/ThreadStore';
 import useAuthStore from '@/stores/AuthenticatedStore';
 import { appendUnsubscribe } from '@/helpers';
+import useNotifications from '@/composables/useNotifications';
 
+const { addNotification } = useNotifications();
 const useUserStore = defineStore('userStore', {
   state: () => {
-    return { users: reactive([]), user: reactive({}) };
+    return { users: reactive([]), user: reactive({}), posts: reactive([]) };
   },
   getters: {
     getUser: (state) => async (userId) => {
@@ -44,7 +47,7 @@ const useUserStore = defineStore('userStore', {
         appendUnsubscribe(unsubscribe);
       });
     },
-    getPostsByUser: () => (userId) => {
+    getPostsByUser: (state) => (userId) => {
       return new Promise((resolve, reject) => {
         const postsRef = collection(db, 'posts');
         const q = query(postsRef, where('userId', '==', userId));
@@ -56,6 +59,7 @@ const useUserStore = defineStore('userStore', {
                 ...doc.data(),
                 id: doc.id,
               }));
+              state.posts = posts;
               resolve(posts);
             } catch (error) {
               console.error('While getting posts : ', error);
@@ -108,16 +112,33 @@ const useUserStore = defineStore('userStore', {
     async updateUserDetails(userData, userId) {
       try {
         const userRef = doc(db, 'users', userId);
-
-        await updateDoc(userRef, {
+        let userInfos = {
           username: userData.username,
           name: userData.name,
           bio: userData.bio || null,
           email: userData.email,
           website: userData.website || null,
           location: userData.location || null,
-        });
-        console.log('User Updated Successfilly !!!');
+        };
+
+        if (userData.avatar) {
+          console.log('from store ', userData);
+          const storage = getStorage();
+          const storageRef = ref(
+            storage,
+            `uploads/${userId}/images/${Date.now()}-${userData.avatar.name}`
+          );
+          const snapShot = await uploadBytes(storageRef, userData.avatar);
+          userData.avatar = await getDownloadURL(snapShot.ref);
+          userInfos.avatar = userData.avatar;
+        } else {
+          console.log('Avatar Not Provided!');
+        }
+
+        this.user = { ...userInfos };
+        await updateDoc(userRef, { ...userInfos });
+        await useAuthStore().getAuthenticatedUser();
+        addNotification({ message: 'Profile Updated Successfully!', timeout: 6000 });
       } catch (error) {
         console.error(error);
       }
@@ -137,7 +158,6 @@ const useUserStore = defineStore('userStore', {
           registeredAt,
         });
         await setDoc(userRef, user);
-        console.log('User registered successfully!');
       } catch (err) {
         throw new Error(err);
       }
@@ -155,7 +175,16 @@ const useUserStore = defineStore('userStore', {
           email,
           password
         );
-        console.log('Successful registration!');
+        if (avatar) {
+          const storage = getStorage();
+          const storageRef = ref(
+            storage,
+            `uploads/${userCredential.user.uid}/images/${Date.now()}-${avatar.name}`
+          );
+          const snapShot = await uploadBytes(storageRef, avatar);
+          avatar = await getDownloadURL(snapShot.ref);
+        }
+        addNotification({ message: 'Successful registration!', timeout: 6000 });
         await this.createUser(userCredential.user.uid, name, username, email, avatar);
       } catch (err) {
         throw new Error(err);
@@ -165,7 +194,7 @@ const useUserStore = defineStore('userStore', {
       try {
         await signOut(auth);
         useAuthStore().authId = null;
-        console.log('User logged out successfully!');
+        addNotification({ message: 'User logged out successfully!', timeout: 6000 });
       } catch (err) {
         throw new Error(err);
       }
@@ -173,7 +202,7 @@ const useUserStore = defineStore('userStore', {
     async signInWithEmailAndPassword(email, password) {
       try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        console.log('User logged in successfully!');
+        addNotification({ message: 'User logged in successfully!', timeout: 6000 });
         await useAuthStore().getAuthenticatedUser();
         return userCredential;
       } catch (err) {
@@ -195,10 +224,10 @@ const useUserStore = defineStore('userStore', {
             user.email,
             user.photoURL
           );
-          console.log('Registered with Google Provider successfully!');
+          addNotification({ message: 'Successful registration!', timeout: 6000 });
         } else {
           await useAuthStore().getAuthenticatedUser();
-          console.log('Signed in with Google Provider successfully!');
+          addNotification({ message: 'User logged in successfully!', timeout: 6000 });
         }
       } catch (error) {
         throw new Error(error);
