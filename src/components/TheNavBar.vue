@@ -45,14 +45,12 @@ const logOut = async () => {
           </li>
         </ul>
         <ul v-if="authId" class="d-flex align-items-center list-unstyled m-0">
-          <li class="me-2">
+          <li class="me-2" style="width: 48px; height: 49px">
             <img
               @error="handleImgError"
-              :src="authenticatedUser?.avatar"
+              :src="authenticatedUser?.avatar || '/user-placeholder.png'"
               :alt="`${authenticatedUser?.username} profile picture`"
-              class="img-fluid rounded-circle"
-              width="45"
-              height="45"
+              class="rounded-circle h-100 w-100"
             />
           </li>
           <li>

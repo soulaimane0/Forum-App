@@ -63,4 +63,7 @@ body::-webkit-scrollbar-thumb {
     color-stop(0.86, rgb(28, 58, 148))
   );
 }
+img {
+  object-fit: cover;
+}
 </style>

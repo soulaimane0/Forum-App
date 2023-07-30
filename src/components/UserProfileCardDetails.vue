@@ -1,5 +1,11 @@
 <script setup>
 import { handleImgError } from '@/helpers';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
+
+dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 const props = defineProps(['user', 'postsCount', 'threadsCount']);
 </script>
@@ -9,7 +15,7 @@ const props = defineProps(['user', 'postsCount', 'threadsCount']);
     <div class="card-header text-center border-0 bg-white">
       <img
         @error="handleImgError"
-        :src="user?.avatar"
+        :src="user?.avatar || '/user-placeholder.png'"
         :alt="`${user?.username} profile picture`"
         class="rounded-circle"
         width="120"
@@ -34,7 +40,9 @@ const props = defineProps(['user', 'postsCount', 'threadsCount']);
     </div>
     <small class="d-flex justify-content-center mt-3" style="font-size: 0.7rem">
       <!-- ${getUser?.registeredAt} -->
-      {{ `Member since june 2018,` }} last visited &nbsp;
+      Member since
+      {{ dayjs.unix(user?.registeredAt?.seconds || user?.registeredAt).format('YYYY') }},
+      last visited &nbsp;
       <BaseDate :timestamp="user?.registeredAt" />
     </small>
     <hr class="mt-1 mx-auto w-75" />

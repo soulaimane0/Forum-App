@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, watch } from 'vue';
+import { reactive, watch, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import usePostsStore from '@/stores/PostsStore';
 

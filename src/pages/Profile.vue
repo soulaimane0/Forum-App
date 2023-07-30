@@ -2,8 +2,9 @@
 import useUserStore from '@/stores/UserStore';
 import useThreadStore from '@/stores/ThreadStore';
 import usePostsStore from '@/stores/PostsStore';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { storeToRefs } from 'pinia';
 
 defineProps({
   edit: {
@@ -18,9 +19,9 @@ const userStore = useUserStore();
 const threadStore = useThreadStore();
 const postsStore = usePostsStore();
 
-const user = ref(null);
-const posts = ref(null);
+// const posts = ref(null);
 const threads = ref(null);
+const { user, posts } = storeToRefs(userStore);
 
 const save = async (eventData) => {
   await userStore.updateUserDetails(eventData, userId.value);
@@ -29,8 +30,8 @@ const save = async (eventData) => {
 onMounted(async () => {
   await postsStore.fetchPosts();
   await threadStore.fetchThreads();
-  user.value = await userStore.getUser(userId.value);
-  posts.value = await userStore.getPostsByUser(userId.value);
+  await userStore.getUser(userId.value);
+  await userStore.getPostsByUser(userId.value);
   threads.value = await userStore.getThreadByUser(userId.value);
   emits('ready');
 });

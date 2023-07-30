@@ -2,7 +2,6 @@
 import useNotifications from '@/composables/useNotifications.js';
 
 const { notifications, removeNotification } = useNotifications();
-console.log('Notif', notifications);
 
 const remNotification = (id) => {
   removeNotification(id);

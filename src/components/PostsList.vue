@@ -12,27 +12,32 @@ const handleEdit = (id) => {
   editing.value = editing.value === id ? null : id;
 };
 
+let isUpdating = ref(false);
 const updatePost = async (post) => {
+  isUpdating.value = true;
   await postsStore.updatePost(post.text, post.id);
   editing.value = null;
+  isUpdating.value = false;
 };
 </script>
 
 <template>
   <div v-for="post in posts" :key="post.id" class="card shadow-sm border-0 mb-4 p-3">
     <div class="row g-0">
-      <div class="col-md-2 d-flex flex-column align-items-center">
-        <PostCardUserInfo :userId="post.userId" />
-      </div>
+      <PostCardUserInfo :userId="post.userId" />
       <div class="col-md-10">
         <div class="card-body h-100 d-flex flex-column justify-content-between">
           <div class="d-flex justify-content-between">
-            <PostEditor
-              class="w-100"
-              v-if="editing === post.id"
-              :post="post"
-              @save-post="updatePost"
-            />
+            <div class="w-100" v-if="editing === post.id">
+              <PostEditor
+                v-if="!isUpdating"
+                class="w-100"
+                :post="post"
+                @save-post="updatePost"
+              />
+              <BaseSpinner class="mx-auto" v-else />
+            </div>
+
             <p v-else class="card-text">
               {{ post.text }}
             </p>
