@@ -75,5 +75,4 @@ npm run build
 npm run lint
 ```
 
-![app-screenshot](https://github.com/soulaimane0/Forum-App/assets/82826040/70aa8099-7646-4b3c-8cb3-f77b71ee4364)
-
+![Alt text](/src/assets/images/app-screenshot.png 'Forum app')
