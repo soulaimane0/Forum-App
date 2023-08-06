@@ -19,11 +19,9 @@ This "Forum App" is a real world application created using Vue.js 3 with best pr
 - Creating Vue Plugins
 - Code Splitting
 - Support for older Browsers
-- Webpack configuration
+- Vite configuration
 - SEO and pre-rendering
 - Deployments
-
-By completing the Vue.js Masterclass, you will be able to land any Vue related job or optimize/improve your own projects!
 
 ---
 
@@ -76,3 +74,6 @@ npm run build
 ```
 npm run lint
 ```
+
+![app-screenshot](https://github.com/soulaimane0/Forum-App/assets/82826040/70aa8099-7646-4b3c-8cb3-f77b71ee4364)
+
