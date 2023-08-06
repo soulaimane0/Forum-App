@@ -16,6 +16,9 @@ import '@/sass/main.scss';
 // Font Awesome Plugin
 import FontAwesome from '@/plugins/FontAwesome';
 
+//Vee validate plugin
+import VeeValidatePlugin from '@/plugins/VeeValidatePlugin';
+
 const forumApp = createApp(App);
 const pinia = createPinia();
 
@@ -23,4 +26,5 @@ forumApp.use(router);
 forumApp.use(pinia);
 forumApp.use(BootstrapPlugin);
 forumApp.use(FontAwesome);
+forumApp.use(VeeValidatePlugin);
 forumApp.mount('#app');
