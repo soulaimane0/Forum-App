@@ -28,12 +28,16 @@ const signIn = async () => {
     }
     successRedirect();
   } catch (err) {
-    console.error(err);
+    alert(err.message);
   }
 };
 const signInWithGoogle = async () => {
-  await userStore.signInWithGoogle();
-  successRedirect();
+  try {
+    await userStore.signInWithGoogle();
+    successRedirect();
+  } catch (error) {
+    alert(error.code);
+  }
 };
 </script>
 
@@ -44,19 +48,31 @@ const signInWithGoogle = async () => {
         class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto bg-white rounded px-6 py-8 shadow"
       >
         <h1 class="text-center fw-bold mb-4">Sign in</h1>
-        <form @submit.prevent="signIn">
+        <VeeForm @submit="signIn">
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input required v-model="form.email" type="email" class="form-control" />
+            <VeeField
+              name="email"
+              rules="required|email"
+              required
+              v-model="form.email"
+              type="email"
+              class="form-control"
+            />
+            <VeeErrorMessage class="text-danger" name="email" />
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
-            <input
+            <VeeField
+              name="password"
+              label="Password"
+              rules="required|min:8"
               required
               v-model="form.password"
               type="password"
               class="form-control"
             />
+            <VeeErrorMessage class="text-danger" name="password" />
           </div>
           <div class="mt-6">
             <button type="submit" class="btn btn-primary py-2 fw-bold w-100 mb-3">
@@ -69,7 +85,7 @@ const signInWithGoogle = async () => {
           >
             Create an account?
           </RouterLink>
-        </form>
+        </VeeForm>
       </div>
     </div>
     <div class="row mt-10">

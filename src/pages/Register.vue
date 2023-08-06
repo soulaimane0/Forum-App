@@ -60,7 +60,7 @@ const handleImageUpload = (e) => {
         class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto bg-white rounded px-6 py-8 shadow"
       >
         <h1 class="text-center fw-bold mb-6">Register</h1>
-        <form @submit.prevent="registerUser">
+        <VeeForm @submit="registerUser">
           <div
             class="avatar-container text-center mx-auto"
             style="height: 125px; width: 130px"
@@ -73,41 +73,75 @@ const handleImageUpload = (e) => {
                 style="cursor: pointer"
               />
             </label>
-            <input
+            <VeeField
+              name="avatar"
               type="file"
               id="avatar"
               accept="image/*"
               @change="handleImageUpload"
               hidden
             />
+            <VeeErrorMessage class="text-danger" name="avatar" />
           </div>
           <div class="mb-3">
             <label class="form-label">Full Name</label>
-            <input required v-model="form.name" type="text" class="form-control" />
+            <VeeField
+              name="name"
+              id="name"
+              rules="required"
+              required
+              v-model="form.name"
+              type="text"
+              class="form-control"
+            />
+            <VeeErrorMessage class="text-danger" name="name" />
           </div>
           <div class="mb-3">
             <label class="form-label">Username</label>
-            <input required v-model="form.username" type="text" class="form-control" />
+            <VeeField
+              name="username"
+              id="username"
+              rules="required|unique:users,username"
+              v-model="form.username"
+              type="text"
+              class="form-control"
+              required
+            />
+            <VeeErrorMessage class="text-danger" name="username" />
           </div>
           <div class="mb-3">
             <label class="form-label">Email</label>
-            <input required v-model="form.email" type="email" class="form-control" />
+            <VeeField
+              name="email"
+              id="email"
+              v-model="form.email"
+              type="email"
+              class="form-control"
+              rules="required|email|unique:users,email"
+              required
+            />
+            <VeeErrorMessage class="text-danger" name="email" />
           </div>
           <div class="mb-3">
             <label class="form-label">Password</label>
-            <input
+            <VeeField
+              name="password"
+              label="Password"
+              id="password"
               required
               v-model="form.password"
               type="password"
               class="form-control"
+              rules="required|min:8"
             />
+            <VeeErrorMessage class="text-danger" name="password" />
           </div>
           <div class="mt-6">
             <button type="submit" class="btn btn-primary py-2 fw-bold w-100">
               Register
             </button>
           </div>
-        </form>
+        </VeeForm>
       </div>
     </div>
     <div class="row mt-10">
