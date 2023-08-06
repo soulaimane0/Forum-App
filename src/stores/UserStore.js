@@ -122,7 +122,6 @@ const useUserStore = defineStore('userStore', {
         };
 
         if (userData.avatar) {
-          console.log('from store ', userData);
           const storage = getStorage();
           const storageRef = ref(
             storage,
@@ -131,10 +130,7 @@ const useUserStore = defineStore('userStore', {
           const snapShot = await uploadBytes(storageRef, userData.avatar);
           userData.avatar = await getDownloadURL(snapShot.ref);
           userInfos.avatar = userData.avatar;
-        } else {
-          console.log('Avatar Not Provided!');
         }
-
         this.user = { ...userInfos };
         await updateDoc(userRef, { ...userInfos });
         await useAuthStore().getAuthenticatedUser();
@@ -205,8 +201,14 @@ const useUserStore = defineStore('userStore', {
         addNotification({ message: 'User logged in successfully!', timeout: 6000 });
         await useAuthStore().getAuthenticatedUser();
         return userCredential;
-      } catch (err) {
-        throw new Error(err);
+      } catch (error) {
+        if (error.code === 'auth/user-not-found') {
+          throw new Error('Email not found. Please check your email or register.');
+        } else if (error.code === 'auth/wrong-password') {
+          throw new Error('Incorrect email or password.');
+        } else {
+          throw new Error('An error occurred during sign-in. Please try again later.');
+        }
       }
     },
     async signInWithGoogle() {

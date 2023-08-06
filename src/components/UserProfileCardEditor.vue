@@ -19,7 +19,6 @@ const changeRandomAvatar = (event) => {
     userPreviewImg.value = reader.result;
   };
   reader.readAsDataURL(activeUser.avatar);
-  console.log(activeUser);
 };
 
 const handleImageUpload = (e) => {
@@ -31,12 +30,10 @@ const handleImageUpload = (e) => {
     userPreviewImg.value = reader.result;
   };
   reader.readAsDataURL(activeUser.avatar);
-  console.log(activeUser);
 };
 
 const save = () => {
   if (activeUser.email && activeUser.name && activeUser.email) {
-    console.log('acc ', activeUser);
     emits('update-user-profile', { ...activeUser });
     router.push({ name: 'profile' });
   } else {

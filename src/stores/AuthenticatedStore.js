@@ -15,14 +15,12 @@ const useAuthStore = defineStore('AuthStore', {
   getters: {},
   actions: {
     async getAuthenticatedUser() {
-      console.log('auth store started...');
       const user = auth.currentUser;
       if (user) {
         const userId = user.uid;
         this.authenticatedUser = await useUserStore().getUser(userId);
         this.authId = userId;
       } else {
-        console.log('User is signed out!');
       }
     },
     async initAuthentication() {
@@ -30,7 +28,6 @@ const useAuthStore = defineStore('AuthStore', {
       return new Promise((resolve) => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
           try {
-            console.log('the user has changed!');
             if (user) {
               await this.getAuthenticatedUser();
               resolve(user);

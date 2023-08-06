@@ -38,13 +38,7 @@ const getRandomImage = async () => {
   const response = await fetch(randomImage.webformatURL);
   const blob = await response.blob();
 
-  // const urlParts = randomImage.webformatURL.split('/');
-  // const originalFileName = urlParts[urlParts.length - 1];
-  // const timestamp = Date.now();
-  // const uniqueFileName = `${timestamp}-${originalFileName}`;
-
   const file = new File([blob], randomImage.webformatURL, { type: blob.type });
-  console.log(file);
   emits('hit', file);
 };
 </script>

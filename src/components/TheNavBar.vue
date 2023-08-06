@@ -11,6 +11,7 @@ const { authenticatedUser, authId } = storeToRefs(authUserStore);
 const logOut = async () => {
   await userStore.logOut();
 };
+// logOut();
 </script>
 
 <template>
@@ -39,9 +40,6 @@ const logOut = async () => {
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
             <RouterLink class="nav-link active" :to="{ name: 'home' }">Home</RouterLink>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
           </li>
         </ul>
         <ul v-if="authId" class="d-flex align-items-center list-unstyled m-0">

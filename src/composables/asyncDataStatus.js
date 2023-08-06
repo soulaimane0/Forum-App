@@ -12,7 +12,7 @@ const useAsyncDataStatus = () => {
 
     return { isDataReady, asyncData_fetched };
   } catch (err) {
-    console.log('Error : ', err);
+    console.error('Error : ', err);
   }
 };
 

@@ -6,11 +6,11 @@ import { storeToRefs } from 'pinia';
 
 const props = defineProps(['userId']);
 const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-// const user = ref(null);
+// const { user } = storeToRefs(userStore);
+const user = ref(null);
 
 onMounted(async () => {
-  await userStore.getUser(props.userId);
+  user.value = await userStore.getUser(props.userId);
 });
 </script>
 
